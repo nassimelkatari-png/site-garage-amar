@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue véhicules</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#EEF0EF;
+    --ink:#181C1F;
+    --ink-soft:#565C5F;
+    --card:#FFFFFF;
+    --line:#DADDD9;
+    --accent:#B8631E;
+    --accent-ink:#7A4114;
+    --steel:#35506B;
+    --ok-bg:#E4EFE0;
+    --ok-ink:#2E5A22;
+    --hold-bg:#F5E9D6;
+    --hold-ink:#8A5A0E;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .site-name{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+  }
+  header.top{
+    padding:28px 6vw 22px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .brand{
+    font-size:26px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  .brand small{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    font-weight:400;
+    text-transform:none;
+    color:var(--ink-soft);
+    letter-spacing:0;
+    margin-top:2px;
+  }
+  nav.top a{
+    font-size:14px;
+    color:var(--ink);
+    text-decoration:none;
+    margin-left:22px;
+    border-bottom:2px solid transparent;
+    padding-bottom:2px;
+  }
+  nav.top a:hover{border-bottom-color:var(--accent);}
+
+  .hero{
+    padding:54px 6vw 40px;
+    max-width:760px;
+  }
+  .hero h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:clamp(32px,4.2vw,48px);
+    line-height:1.08;
+    margin:0 0 14px;
+  }
+  .hero p{
+    font-size:16px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    margin:0;
+    max-width:520px;
+  }
+
+  main{padding:0 6vw 80px;}
+
+  .toolbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .count{font-size:14px;color:var(--ink-soft);}
+  select{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:8px 12px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--card);
+    color:var(--ink);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:22px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:border-color .15s ease;
+  }
+  .card:hover{border-color:var(--accent);}
+  .card .thumb{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    display:block;
+    background:#DDD;
+  }
+  .card .thumb.placeholder{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#9A9D99;
+    font-size:13px;
+  }
+  .card .body{padding:16px 18px 18px;}
+  .badge{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    padding:3px 9px;
+    border-radius:3px;
+    margin-bottom:10px;
+  }
+  .badge.ok{background:var(--ok-bg);color:var(--ok-ink);}
+  .badge.hold{background:var(--hold-bg);color:var(--hold-ink);}
+  .card h3{
+    font-family:'Oswald',sans-serif;
+    font-size:19px;
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .meta{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 12px;
+  }
+  .price{
+    font-family:'Oswald',sans-serif;
+    font-size:22px;
+    font-weight:600;
+    color:var(--accent-ink);
+  }
+
+  .state{
+    padding:60px 6vw;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(20,22,20,0.55);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding:5vh 20px;
+    overflow-y:auto;
+    z-index:50;
+  }
+  .overlay.open{display:flex;}
+  .detail{
+    background:var(--card);
+    max-width:760px;
+    width:100%;
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .detail img{
+    width:100%;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    display:block;
+    background:#DDD;
+  }
+  .detail-body{padding:28px 34px 34px;}
+  .detail-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:6px;
+  }
+  .detail h2{
+    font-family:'Oswald',sans-serif;
+    font-size:28px;
+    font-weight:600;
+    margin:0;
+  }
+  .close-btn{
+    background:none;
+    border:1px solid var(--line);
+    border-radius:50%;
+    width:32px;
+    height:32px;
+    font-size:16px;
+    cursor:pointer;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+  .close-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .detail .price{display:block;margin:2px 0 20px;}
+
+  .spec-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border-top:1px solid var(--line);
+    margin-bottom:20px;
+  }
+  .spec{
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .spec:nth-child(odd){padding-right:16px;}
+  .spec:nth-child(even){padding-left:16px;border-left:1px solid var(--line);}
+  .spec .label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    color:var(--ink-soft);
+    margin-bottom:3px;
+  }
+  .spec .value{font-size:14px;font-weight:500;}
+
+  .notes{
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    margin-bottom:24px;
+  }
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .btn{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    padding:12px 20px;
+    border-radius:5px;
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--ink);
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+  }
+  .btn.primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  .btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent-ink);}
+
+  footer{
+    padding:26px 6vw;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  @media(max-width:520px){
+    .spec-grid{grid-template-columns:1fr;}
+    .spec:nth-child(even){padding-left:0;border-left:none;}
+    .spec:nth-child(odd){padding-right:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand site-name">GARAGE DEMO
+    <small>Modèle de site — remplacer nom, logo et coordonnées</small>
+  </div>
+  <nav class="top">
+    <a href="#">Catalogue</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1 class="site-name">Le stock, vu clair.</h1>
+  <p>Chaque véhicule de notre sélection, ses documents et sa disponibilité — mis à jour en direct. Cliquez sur une fiche pour tous les détails et prendre rendez-vous.</p>
+</section>
+
+<main>
+  <div class="toolbar">
+    <span class="count" id="count">Chargement…</span>
+    <select id="sort">
+      <option value="recent">Plus récents</option>
+      <option value="price-asc">Prix croissant</option>
+      <option value="price-desc">Prix décroissant</option>
+      <option value="km-asc">Kilométrage croissant</option>
+    </select>
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="state" class="state" style="display:none;"></div>
+</main>
+
+<footer>
+  Ce site lit automatiquement le tableau du stock — ajoutez une voiture dans le Google Sheet, elle apparaît ici sans autre manipulation.
+</footer>
+
+<div class="overlay" id="overlay">
+  <div class="detail" id="detail"></div>
+</div>
+
+<script>
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRfqBL9hEhOQUxk4h8K2zpL6Bqpj1hbHKCjTO7axnjy91LOBQWbc-3ZweiAc2Y7fy_PEsmf3UVX8Ezy/pub?gid=841689429&single=true&output=csv";
+
+  let cars = [];
+
+  function driveImageUrl(link){
+    if(!link) return null;
+    const m = link.match(/\/d\/([a-zA-Z0-9_-]+)/) || link.match(/id=([a-zA-Z0-9_-]+)/);
+    if(!m) return null;
+    return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w800";
+  }
+
+  function fmtPrice(v){
+    const n = parseFloat(String(v).replace(/[^\d.]/g,""));
+    if(isNaN(n)) return v;
+    return n.toLocaleString('fr-BE') + " €";
+  }
+  function fmtKm(v){
+    const n = parseFloat(String(v).replace(/[^\d.]/g,""));
+    if(isNaN(n)) return v;
+    return n.toLocaleString('fr-BE') + " km";
+  }
+
+  function render(){
+    const grid = document.getElementById('grid');
+    const state = document.getElementById('state');
+    const count = document.getElementById('count');
+    const visible = cars.filter(c => (c["Statut"]||"").trim().toLowerCase() !== "vendu");
+
+    if(visible.length === 0){
+      grid.innerHTML = "";
+      state.style.display = "block";
+      state.textContent = "Aucun véhicule disponible pour le moment.";
+      count.textContent = "";
+      return;
+    }
+    state.style.display = "none";
+    count.textContent = visible.length + " véhicule" + (visible.length > 1 ? "s" : "");
+
+    grid.innerHTML = visible.map((c, i) => {
+      const img = driveImageUrl(c["Lien photos"]);
+      const statut = (c["Statut"]||"").trim();
+      const badgeClass = statut.toLowerCase() === "réservé" ? "hold" : "ok";
+      return `
+        <div class="card" data-idx="${cars.indexOf(c)}">
+          ${img ? `<img class="thumb" src="${img}" alt="${c['Marque']} ${c['Modèle']}">`
+                : `<div class="thumb placeholder">Photo à venir</div>`}
+          <div class="body">
+            <span class="badge ${badgeClass}">${statut}</span>
+            <h3>${c["Marque"]||""} ${c["Modèle"]||""}</h3>
+            <p class="meta">${c["Année"]||""} · ${fmtKm(c["Kilométrage (km)"])} · ${c["Carburant"]||""}</p>
+            <span class="price">${fmtPrice(c["Prix (€)"])}</span>
+          </div>
+        </div>`;
+    }).join("");
+
+    document.querySelectorAll('.card').forEach(el=>{
+      el.addEventListener('click', ()=> openDetail(parseInt(el.dataset.idx)));
+    });
+  }
+
+  function openDetail(idx){
+    const c = cars[idx];
+    const img = driveImageUrl(c["Lien photos"]);
+    const doc = c["Lien documents"];
+    const detail = document.getElementById('detail');
+    detail.innerHTML = `
+      ${img ? `<img src="${img}" alt="${c['Marque']} ${c['Modèle']}">` : ""}
+      <div class="detail-body">
+        <div class="detail-top">
+          <h2 class="site-name">${c["Marque"]||""} ${c["Modèle"]||""}</h2>
+          <button class="close-btn" id="closeBtn">&times;</button>
+        </div>
+        <span class="price">${fmtPrice(c["Prix (€)"])}</span>
+        <div class="spec-grid">
+          <div class="spec"><div class="label">Année</div><div class="value">${c["Année"]||"—"}</div></div>
+          <div class="spec"><div class="label">Kilométrage</div><div class="value">${fmtKm(c["Kilométrage (km)"])}</div></div>
+          <div class="spec"><div class="label">Carburant</div><div class="value">${c["Carburant"]||"—"}</div></div>
+          <div class="spec"><div class="label">Boîte</div><div class="value">${c["Boîte de vitesse"]||"—"}</div></div>
+          <div class="spec"><div class="label">Couleur</div><div class="value">${c["Couleur"]||"—"}</div></div>
+          <div class="spec"><div class="label">Garantie</div><div class="value">${c["Garantie"]||"—"}</div></div>
+          <div class="spec"><div class="label">Dernier contrôle technique</div><div class="value">${c["Date dernier contrôle technique"]||"—"}</div></div>
+          <div class="spec"><div class="label">Résultat</div><div class="value">${c["Résultat contrôle technique"]||"—"}</div></div>
+        </div>
+        ${c["Infos supplémentaires"] ? `<p class="notes">${c["Infos supplémentaires"]}</p>` : ""}
+        <div class="actions">
+          <a class="btn primary" href="#" onclick="alert('Branchement Google Calendar à venir — ce bouton ouvrira la prise de RDV.'); return false;">Prendre rendez-vous</a>
+          ${doc ? `<a class="btn ghost" href="${doc}" target="_blank" rel="noopener">Voir la fiche complète</a>` : ""}
+        </div>
+      </div>`;
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('closeBtn').addEventListener('click', closeDetail);
+  }
+
+  function closeDetail(){
+    document.getElementById('overlay').classList.remove('open');
+  }
+  document.getElementById('overlay').addEventListener('click', (e)=>{
+    if(e.target.id === 'overlay') closeDetail();
+  });
+
+  document.getElementById('sort').addEventListener('change', (e)=>{
+    const v = e.target.value;
+    const num = (s)=> parseFloat(String(s).replace(/[^\d.]/g,"")) || 0;
+    if(v === 'price-asc') cars.sort((a,b)=> num(a["Prix (€)"]) - num(b["Prix (€)"]));
+    else if(v === 'price-desc') cars.sort((a,b)=> num(b["Prix (€)"]) - num(a["Prix (€)"]));
+    else if(v === 'km-asc') cars.sort((a,b)=> num(a["Kilométrage (km)"]) - num(b["Kilométrage (km)"]));
+    else cars.sort((a,b)=> new Date(b["Date d'ajout"]||0) - new Date(a["Date d'ajout"]||0));
+    render();
+  });
+
+  function loadData(){
+    const state = document.getElementById('state');
+    state.style.display = 'block';
+    state.textContent = 'Chargement du catalogue…';
+    Papa.parse(CSV_URL, {
+      download:true,
+      header:true,
+      skipEmptyLines:true,
+      complete: function(results){
+        cars = results.data.filter(r => r["ID"] && r["ID"].trim() !== "");
+        if(cars.length === 0){
+          state.textContent = "Aucune donnée trouvée — vérifie que le Sheet est bien publié sur le web.";
+          return;
+        }
+        render();
+      },
+      error: function(err){
+        state.textContent = "Impossible de charger le catalogue. Vérifie le lien de publication du Google Sheet.";
+        console.error(err);
+      }
+    });
+  }
+
+  loadData();
+</script>
+
+</body>
+</html>
