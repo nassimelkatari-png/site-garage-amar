@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catalogue véhicules</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "visite-vehicule", {origin:"https://cal.com"});
+  Cal.ns["visite-vehicule"]("ui", {"hideEventTypeDetails": false, "layout": "month_view"});
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -417,7 +422,13 @@
         </div>
         ${c["Infos supplémentaires"] ? `<p class="notes">${c["Infos supplémentaires"]}</p>` : ""}
         <div class="actions">
-          <a class="btn primary" href="#" onclick="alert('Branchement Google Calendar à venir — ce bouton ouvrira la prise de RDV.'); return false;">Prendre rendez-vous</a>
+          <button class="btn primary"
+            data-cal-namespace="visite-vehicule"
+            data-cal-link="nassim-elk-zkgvuo/visite-vehicule"
+            data-cal-config='{"layout":"month_view","notes":"Visite pour : ${(c["Marque"]||"")+" "+(c["Modèle"]||"")}"}'
+            style="border:1px solid var(--accent); font-family:'Inter',sans-serif; cursor:pointer;">
+            Prendre rendez-vous
+          </button>
           ${doc ? `<a class="btn ghost" href="${doc}" target="_blank" rel="noopener">Voir la fiche complète</a>` : ""}
         </div>
       </div>`;
