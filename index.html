@@ -305,15 +305,57 @@
     font-family:'Oswald',sans-serif;
     font-size:26px;
     font-weight:600;
-    margin:0 0 4px;
+    margin:0 0 20px;
   }
-  .map-section .addr{
+  .find-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+    align-items:stretch;
+  }
+  .find-photo-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .find-photo-card .photo{
+    width:100%;
+    aspect-ratio:16/10;
+    object-fit:cover;
+    display:block;
+    background:#DDD;
+  }
+  .find-photo-card .photo.placeholder{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#9A9D99;
+    font-size:13px;
+  }
+  .find-photo-card .find-body{
+    padding:20px 22px 22px;
+  }
+  .find-photo-card .find-body p{
     font-size:14px;
+    line-height:1.6;
     color:var(--ink-soft);
-    margin:0 0 18px;
+    margin:0 0 14px;
+  }
+  .find-info{
+    font-size:13px;
+    line-height:1.8;
+  }
+  .find-info .label{
+    color:var(--ink-soft);
+    display:inline-block;
+    width:70px;
   }
   #map{
-    height:380px;
+    height:100%;
+    min-height:280px;
     width:100%;
     border-radius:6px;
     border:1px solid var(--line);
@@ -331,6 +373,11 @@
     transform:rotate(-45deg);
     border:2px solid #fff;
     box-shadow:0 1px 4px rgba(0,0,0,0.35);
+  }
+
+  @media(max-width:720px){
+    .find-grid{grid-template-columns:1fr;}
+    #map{min-height:260px;}
   }
 </style>
 </head>
@@ -367,8 +414,19 @@
 
 <section class="map-section">
   <h2 class="site-name">Nous trouver</h2>
-  <p class="addr">Mechelsesteenweg 187, 3020 Herent</p>
-  <div id="map"></div>
+  <div class="find-grid">
+    <div class="find-photo-card">
+      <div class="photo placeholder">Photo du garage à venir</div>
+      <div class="find-body">
+        <p>Un accueil sans détour : venez voir le véhicule qui vous intéresse, poser vos questions, discuter du financement. Parking sur place.</p>
+        <div class="find-info">
+          <div><span class="label">Adresse</span>Mechelsesteenweg 187, 3020 Herent</div>
+          <div><span class="label">Horaires</span>Sur rendez-vous</div>
+        </div>
+      </div>
+    </div>
+    <div id="map"></div>
+  </div>
 </section>
 
 <footer>
