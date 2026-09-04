@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catalogue véhicules</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script type="text/javascript">
   (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
   Cal("init", "visite-vehicule", {origin:"https://cal.com"});
@@ -295,6 +297,41 @@
     .spec:nth-child(even){padding-left:0;border-left:none;}
     .spec:nth-child(odd){padding-right:0;}
   }
+
+  .map-section{
+    padding:0 6vw 60px;
+  }
+  .map-section h2{
+    font-family:'Oswald',sans-serif;
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .map-section .addr{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+  #map{
+    height:380px;
+    width:100%;
+    border-radius:6px;
+    border:1px solid var(--line);
+    background:#E4E6E3;
+  }
+  .leaflet-popup-content-wrapper{
+    border-radius:4px;
+    font-family:'Inter',sans-serif;
+  }
+  .pin-marker{
+    width:26px;
+    height:26px;
+    border-radius:50% 50% 50% 0;
+    background:var(--accent);
+    transform:rotate(-45deg);
+    border:2px solid #fff;
+    box-shadow:0 1px 4px rgba(0,0,0,0.35);
+  }
 </style>
 </head>
 <body>
@@ -327,6 +364,12 @@
   <div id="grid" class="grid"></div>
   <div id="state" class="state" style="display:none;"></div>
 </main>
+
+<section class="map-section">
+  <h2 class="site-name">Nous trouver</h2>
+  <p class="addr">Mechelsesteenweg 187, 3020 Herent</p>
+  <div id="map"></div>
+</section>
 
 <footer>
   Ce site lit automatiquement le tableau du stock — ajoutez une voiture dans le Google Sheet, elle apparaît ici sans autre manipulation.
@@ -477,6 +520,46 @@
   }
 
   loadData();
+
+  // --- Carte "Nous trouver" ---
+  const GARAGE_ADDRESS = "Mechelsesteenweg 187, 3020 Herent, Belgique";
+
+  function initMap(lat, lon){
+    const map = L.map('map', { scrollWheelZoom: false }).setView([lat, lon], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19
+    }).addTo(map);
+
+    const icon = L.divIcon({
+      className: '',
+      html: '<div class="pin-marker"></div>',
+      iconSize: [26,26],
+      iconAnchor: [13,26]
+    });
+
+    L.marker([lat, lon], { icon }).addTo(map)
+      .bindPopup("<strong>GARAGE DEMO</strong><br>" + GARAGE_ADDRESS)
+      .openPopup();
+  }
+
+  function loadMap(){
+    const mapEl = document.getElementById('map');
+    fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(GARAGE_ADDRESS))
+      .then(r => r.json())
+      .then(results => {
+        if(results && results.length > 0){
+          initMap(parseFloat(results[0].lat), parseFloat(results[0].lon));
+        } else {
+          mapEl.innerHTML = "<div style='padding:20px;font-size:13px;color:var(--ink-soft);'>Adresse introuvable sur la carte.</div>";
+        }
+      })
+      .catch(() => {
+        mapEl.innerHTML = "<div style='padding:20px;font-size:13px;color:var(--ink-soft);'>Impossible de charger la carte.</div>";
+      });
+  }
+
+  loadMap();
 </script>
 
 </body>
