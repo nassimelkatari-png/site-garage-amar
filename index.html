@@ -132,16 +132,22 @@
   }
   .year-row span{font-size:12px;color:var(--ink-soft);}
 
+  .checkbox-list-wrap{position:relative;}
+  .checkbox-list-wrap::after{
+    content:"";
+    position:absolute;
+    left:0;right:6px;bottom:0;
+    height:22px;
+    background:linear-gradient(to bottom, transparent, var(--card));
+    pointer-events:none;
+    border-radius:0 0 4px 4px;
+  }
+  .checkbox-list-wrap.no-overflow::after{display:none;}
   .checkbox-list{
     display:flex;flex-direction:column;gap:8px;max-height:170px;
-    overflow-y:scroll;
-    scrollbar-width:thin;
-    scrollbar-color:var(--accent) var(--line);
+    overflow-y:auto;
     padding-right:6px;
   }
-  .checkbox-list::-webkit-scrollbar{width:6px;}
-  .checkbox-list::-webkit-scrollbar-track{background:var(--line);border-radius:3px;}
-  .checkbox-list::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}
   .checkbox-list label{
     font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink);
   }
@@ -322,32 +328,32 @@
 
     <div class="filter-group">
       <div class="fg-title">Kilométrage</div>
-      <div class="checkbox-list" id="kmBrackets"></div>
+      <div class="checkbox-list-wrap"><div class="checkbox-list" id="kmBrackets"></div></div>
     </div>
 
     <div class="filter-group">
       <div class="fg-title">Marque</div>
-      <div class="checkbox-list" id="filterMarque"></div>
+      <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterMarque"></div></div>
     </div>
 
     <div class="filter-group">
       <div class="fg-title">Carburant</div>
-      <div class="checkbox-list" id="filterCarburant"></div>
+      <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterCarburant"></div></div>
     </div>
 
     <div class="filter-group">
       <div class="fg-title">Transmission</div>
-      <div class="checkbox-list" id="filterTransmission"></div>
+      <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterTransmission"></div></div>
     </div>
 
     <div class="filter-group">
       <div class="fg-title">Couleur</div>
-      <div class="checkbox-list" id="filterCouleur"></div>
+      <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterCouleur"></div></div>
     </div>
 
     <div class="filter-group" id="optionsGroup" style="display:none;">
       <div class="fg-title">Options</div>
-      <div class="checkbox-list" id="filterOptions"></div>
+      <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterOptions"></div></div>
     </div>
 
     <button class="reset-btn" id="resetFilters">Réinitialiser les filtres</button>
@@ -435,7 +441,7 @@
   // Listes de base : garantissent des options même si pas encore présentes dans le stock actuel.
   // Toute valeur trouvée dans le Sheet mais absente de cette liste est ajoutée automatiquement.
   const BASE_VALUES = {
-    'Marque': ["Audi","BMW","Citroën","Cupra","Dacia","Fiat","Ford","Honda","Hyundai","Jaguar","Jeep","Kia","Land Rover","Mazda","Mercedes-Benz","Mini","Nissan","Opel","Peugeot","Porsche","Renault","Seat","Skoda","Smart","Subaru","Suzuki","Tesla","Toyota","Volkswagen","Volvo"],
+    'Marque': ["Audi","BMW","Citroën","Dacia","Fiat","Ford","Honda","Hyundai","Kia","Mazda","Mercedes-Benz","Nissan","Opel","Peugeot","Renault","Seat","Skoda","Suzuki","Tesla","Toyota","Volkswagen","Volvo"],
     'Carburant': ["Essence","Diesel","Hybride","Hybride rechargeable","Électrique","CNG","LPG"],
     'Boîte de vitesse': ["Manuelle","Automatique"],
     'Couleur': ["Blanc","Noir","Gris","Gris foncé","Argent","Bleu","Rouge","Vert","Jaune","Orange","Marron","Beige"],
@@ -558,6 +564,17 @@
     selMax.addEventListener('change', render);
   }
 
+  function updateScrollHints(){
+    document.querySelectorAll('.checkbox-list-wrap').forEach(wrap => {
+      const list = wrap.querySelector('.checkbox-list');
+      if(list.scrollHeight <= list.clientHeight + 2){
+        wrap.classList.add('no-overflow');
+      } else {
+        wrap.classList.remove('no-overflow');
+      }
+    });
+  }
+
   function buildFilters(){
     buildCheckboxGroup('filterMarque', uniqueValues('Marque'), 'marque');
     buildCheckboxGroup('filterCarburant', uniqueValues('Carburant'), 'carburant');
@@ -572,6 +589,7 @@
     setupKmBrackets();
     setupYearSelects();
     document.getElementById('resetFilters').addEventListener('click', resetFilters);
+    updateScrollHints();
   }
 
   function resetFilters(){
