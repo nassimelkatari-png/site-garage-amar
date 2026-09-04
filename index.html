@@ -423,8 +423,17 @@
   }
   function num(v){ return parseFloat(String(v).replace(/[^\d.]/g,"")) || 0; }
 
+  // Listes de base : garantissent des options même si pas encore présentes dans le stock actuel.
+  // Toute valeur trouvée dans le Sheet mais absente de cette liste est ajoutée automatiquement.
+  const BASE_VALUES = {
+    'Marque': ["Audi","BMW","Citroën","Cupra","Dacia","Fiat","Ford","Honda","Hyundai","Jaguar","Jeep","Kia","Land Rover","Mazda","Mercedes-Benz","Mini","Nissan","Opel","Peugeot","Porsche","Renault","Seat","Skoda","Smart","Subaru","Suzuki","Tesla","Toyota","Volkswagen","Volvo"],
+    'Carburant': ["Essence","Diesel","Hybride","Hybride rechargeable","Électrique","CNG","LPG"],
+    'Boîte de vitesse': ["Manuelle","Automatique"],
+    'Couleur': ["Blanc","Noir","Gris","Gris foncé","Argent","Bleu","Rouge","Vert","Jaune","Orange","Marron","Beige"],
+  };
+
   function uniqueValues(field){
-    const set = new Set();
+    const set = new Set(BASE_VALUES[field] || []);
     cars.forEach(c => { const v = (c[field]||"").trim(); if(v) set.add(v); });
     return Array.from(set).sort();
   }
