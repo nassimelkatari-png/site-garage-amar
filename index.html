@@ -132,7 +132,16 @@
   }
   .year-row span{font-size:12px;color:var(--ink-soft);}
 
-  .checkbox-list{display:flex;flex-direction:column;gap:8px;max-height:170px;overflow-y:auto;}
+  .checkbox-list{
+    display:flex;flex-direction:column;gap:8px;max-height:170px;
+    overflow-y:scroll;
+    scrollbar-width:thin;
+    scrollbar-color:var(--accent) var(--line);
+    padding-right:6px;
+  }
+  .checkbox-list::-webkit-scrollbar{width:6px;}
+  .checkbox-list::-webkit-scrollbar-track{background:var(--line);border-radius:3px;}
+  .checkbox-list::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}
   .checkbox-list label{
     font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink);
   }
