@@ -567,10 +567,15 @@
   function updateScrollHints(){
     document.querySelectorAll('.checkbox-list-wrap').forEach(wrap => {
       const list = wrap.querySelector('.checkbox-list');
-      if(list.scrollHeight <= list.clientHeight + 2){
-        wrap.classList.add('no-overflow');
-      } else {
-        wrap.classList.remove('no-overflow');
+      const refresh = ()=>{
+        const remaining = list.scrollHeight - list.scrollTop - list.clientHeight;
+        if(remaining > 2) wrap.classList.remove('no-overflow');
+        else wrap.classList.add('no-overflow');
+      };
+      refresh();
+      if(!list.dataset.scrollBound){
+        list.addEventListener('scroll', refresh);
+        list.dataset.scrollBound = "1";
       }
     });
   }
