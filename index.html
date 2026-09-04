@@ -54,10 +54,7 @@
     -webkit-font-smoothing:antialiased;
     transition:background .2s ease, color .2s ease;
   }
-  .site-name{
-    font-family:'Oswald',sans-serif;
-    font-weight:700;
-  }
+  .site-name{font-family:'Oswald',sans-serif;font-weight:700;}
   header.top{
     padding:28px 6vw 22px;
     border-bottom:1px solid var(--line);
@@ -67,411 +64,193 @@
     flex-wrap:wrap;
     gap:10px;
   }
-  .brand{
-    font-size:26px;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-  }
+  .brand{font-size:26px;letter-spacing:0.5px;text-transform:uppercase;}
   .brand small{
-    display:block;
-    font-family:'Inter',sans-serif;
-    font-size:12px;
-    font-weight:400;
-    text-transform:none;
-    color:var(--ink-soft);
-    letter-spacing:0;
-    margin-top:2px;
+    display:block;font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
+    text-transform:none;color:var(--ink-soft);letter-spacing:0;margin-top:2px;
   }
   nav.top{display:flex;align-items:center;gap:22px;}
   nav.top a{
-    font-size:14px;
-    color:var(--ink);
-    text-decoration:none;
-    border-bottom:2px solid transparent;
-    padding-bottom:2px;
+    font-size:14px;color:var(--ink);text-decoration:none;
+    border-bottom:2px solid transparent;padding-bottom:2px;
   }
   nav.top a:hover{border-bottom-color:var(--accent);}
 
   .theme-toggle{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    border:1px solid var(--line);
-    background:var(--card);
-    color:var(--ink);
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:16px;
+    width:38px;height:38px;border-radius:50%;
+    border:1px solid var(--line);background:var(--card);color:var(--ink);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;
   }
   .theme-toggle:hover{border-color:var(--accent);}
 
-  .hero{
-    padding:54px 6vw 40px;
-    max-width:760px;
-  }
+  .hero{padding:54px 6vw 40px;max-width:760px;}
   .hero h1{
-    font-family:'Oswald',sans-serif;
-    font-weight:600;
-    font-size:clamp(32px,4.2vw,48px);
-    line-height:1.08;
-    margin:0 0 14px;
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:clamp(32px,4.2vw,48px);
+    line-height:1.08;margin:0 0 14px;
   }
-  .hero p{
-    font-size:16px;
-    color:var(--ink-soft);
-    line-height:1.6;
-    margin:0;
-    max-width:520px;
-  }
+  .hero p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin:0;max-width:520px;}
 
-  .layout{
-    display:flex;
-    gap:32px;
-    padding:0 6vw 80px;
-    align-items:flex-start;
-  }
+  .layout{display:flex;gap:32px;padding:0 6vw 80px;align-items:flex-start;}
 
   .filters{
-    width:250px;
-    flex-shrink:0;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:20px;
-    position:sticky;
-    top:20px;
+    width:260px;flex-shrink:0;background:var(--card);border:1px solid var(--line);
+    border-radius:6px;padding:20px;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow-y:auto;
   }
-  .filters h3{
-    font-family:'Oswald',sans-serif;
-    font-size:16px;
-    font-weight:600;
-    margin:0 0 20px;
-  }
-  .filter-group{
-    border-bottom:1px solid var(--line);
-    padding-bottom:16px;
-    margin-bottom:16px;
-  }
+  .filters h3{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin:0 0 20px;}
+  .filter-group{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px;}
   .filter-group:last-of-type{border-bottom:none;margin-bottom:0;}
   .filter-group .fg-title{
-    font-size:12px;
-    font-weight:600;
-    text-transform:uppercase;
-    letter-spacing:0.4px;
-    color:var(--ink-soft);
-    margin-bottom:10px;
+    font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;
+    color:var(--ink-soft);margin-bottom:12px;
   }
-  .range-row{
-    display:flex;
-    align-items:center;
-    gap:6px;
+
+  /* Slider prix */
+  .price-slider{position:relative;height:20px;margin:4px 2px 8px;}
+  .price-slider .track{position:absolute;top:8px;left:0;right:0;height:4px;background:var(--line);border-radius:2px;}
+  .price-slider .fill{position:absolute;top:8px;height:4px;background:var(--accent);border-radius:2px;}
+  .price-slider input[type=range]{
+    position:absolute;width:100%;top:0;margin:0;height:20px;
+    -webkit-appearance:none;appearance:none;background:none;pointer-events:none;
   }
-  .range-row input{
-    width:100%;
-    font-family:'Inter',sans-serif;
-    font-size:13px;
-    padding:7px 8px;
-    border:1px solid var(--line);
-    border-radius:4px;
-    background:var(--bg);
-    color:var(--ink);
+  .price-slider input[type=range]::-webkit-slider-runnable-track{background:transparent;height:20px;}
+  .price-slider input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;pointer-events:auto;width:16px;height:16px;border-radius:50%;
+    background:var(--accent);border:2px solid var(--card);box-shadow:0 1px 3px rgba(0,0,0,.35);
+    cursor:pointer;margin-top:2px;
   }
-  .range-row span{font-size:12px;color:var(--ink-soft);}
-  .checkbox-list{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    max-height:160px;
-    overflow-y:auto;
+  .price-slider input[type=range]::-moz-range-thumb{
+    pointer-events:auto;width:16px;height:16px;border-radius:50%;
+    background:var(--accent);border:2px solid var(--card);box-shadow:0 1px 3px rgba(0,0,0,.35);cursor:pointer;
   }
+  .price-slider input[type=range]::-moz-range-track{background:transparent;}
+  .range-values{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);}
+
+  .year-row{display:flex;align-items:center;gap:6px;}
+  .year-row select{
+    width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:7px 6px;
+    border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);
+  }
+  .year-row span{font-size:12px;color:var(--ink-soft);}
+
+  .checkbox-list{display:flex;flex-direction:column;gap:8px;max-height:170px;overflow-y:auto;}
   .checkbox-list label{
-    font-size:13px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    cursor:pointer;
-    color:var(--ink);
+    font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink);
   }
   .checkbox-list input{accent-color:var(--accent);}
   .reset-btn{
-    width:100%;
-    font-family:'Inter',sans-serif;
-    font-size:13px;
-    font-weight:500;
-    padding:10px;
-    border-radius:5px;
-    border:1px solid var(--line);
-    background:var(--bg);
-    color:var(--ink);
-    cursor:pointer;
-    margin-top:4px;
+    width:100%;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:10px;
+    border-radius:5px;border:1px solid var(--line);background:var(--bg);color:var(--ink);
+    cursor:pointer;margin-top:4px;
   }
   .reset-btn:hover{border-color:var(--accent);color:var(--accent-ink);}
 
   main{flex:1;min-width:0;}
 
   .toolbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:22px;
-    flex-wrap:wrap;
-    gap:12px;
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;
+    flex-wrap:wrap;gap:12px;
   }
   .count{font-size:14px;color:var(--ink-soft);}
-  select{
-    font-family:'Inter',sans-serif;
-    font-size:14px;
-    padding:8px 12px;
-    border:1px solid var(--line);
-    border-radius:6px;
-    background:var(--card);
-    color:var(--ink);
+  select#sort{
+    font-family:'Inter',sans-serif;font-size:14px;padding:8px 12px;
+    border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);
   }
 
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    grid-template-columns:repeat(auto-fill, minmax(255px, 270px));
     gap:22px;
   }
   .card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:4px;
-    overflow:hidden;
-    cursor:pointer;
-    transition:border-color .15s ease;
+    background:var(--card);border:1px solid var(--line);border-radius:4px;
+    overflow:hidden;cursor:pointer;transition:border-color .15s ease;
+    width:100%;
   }
   .card:hover{border-color:var(--accent);}
-  .card .thumb{
-    width:100%;
-    aspect-ratio:4/3;
-    object-fit:cover;
-    display:block;
-    background:#DDD;
-  }
+  .card .thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#DDD;}
   .card .thumb.placeholder{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#9A9D99;
-    font-size:13px;
+    display:flex;align-items:center;justify-content:center;color:#9A9D99;font-size:13px;
   }
   .card .body{padding:16px 18px 18px;}
   .badge{
-    display:inline-block;
-    font-size:11px;
-    font-weight:600;
-    letter-spacing:0.3px;
-    padding:3px 9px;
-    border-radius:3px;
-    margin-bottom:10px;
+    display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.3px;
+    padding:3px 9px;border-radius:3px;margin-bottom:10px;
   }
   .badge.ok{background:var(--ok-bg);color:var(--ok-ink);}
   .badge.hold{background:var(--hold-bg);color:var(--hold-ink);}
-  .card h3{
-    font-family:'Oswald',sans-serif;
-    font-size:19px;
-    font-weight:600;
-    margin:0 0 6px;
-  }
-  .meta{
-    font-size:13px;
-    color:var(--ink-soft);
-    margin:0 0 12px;
-  }
-  .price{
-    font-family:'Oswald',sans-serif;
-    font-size:22px;
-    font-weight:600;
-    color:var(--accent-ink);
-  }
+  .card h3{font-family:'Oswald',sans-serif;font-size:19px;font-weight:600;margin:0 0 6px;}
+  .meta{font-size:13px;color:var(--ink-soft);margin:0 0 12px;}
+  .price{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;color:var(--accent-ink);}
 
-  .state{
-    padding:60px 0;
-    text-align:center;
-    color:var(--ink-soft);
-    font-size:15px;
-  }
+  .state{padding:60px 0;text-align:center;color:var(--ink-soft);font-size:15px;}
 
   .overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(10,12,10,0.6);
-    display:none;
-    align-items:flex-start;
-    justify-content:center;
-    padding:5vh 20px;
-    overflow-y:auto;
-    z-index:50;
+    position:fixed;inset:0;background:rgba(10,12,10,0.6);display:none;
+    align-items:flex-start;justify-content:center;padding:5vh 20px;overflow-y:auto;z-index:50;
   }
   .overlay.open{display:flex;}
-  .detail{
-    background:var(--card);
-    max-width:760px;
-    width:100%;
-    border-radius:6px;
-    overflow:hidden;
-  }
-  .detail img{
-    width:100%;
-    aspect-ratio:16/9;
-    object-fit:cover;
-    display:block;
-    background:#DDD;
-  }
+  .detail{background:var(--card);max-width:760px;width:100%;border-radius:6px;overflow:hidden;}
+  .detail img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#DDD;}
   .detail-body{padding:28px 34px 34px;}
-  .detail-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:16px;
-    margin-bottom:6px;
-  }
-  .detail h2{
-    font-family:'Oswald',sans-serif;
-    font-size:28px;
-    font-weight:600;
-    margin:0;
-  }
+  .detail-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px;}
+  .detail h2{font-family:'Oswald',sans-serif;font-size:28px;font-weight:600;margin:0;}
   .close-btn{
-    background:none;
-    border:1px solid var(--line);
-    border-radius:50%;
-    width:32px;
-    height:32px;
-    font-size:16px;
-    cursor:pointer;
-    color:var(--ink-soft);
-    flex-shrink:0;
+    background:none;border:1px solid var(--line);border-radius:50%;width:32px;height:32px;
+    font-size:16px;cursor:pointer;color:var(--ink-soft);flex-shrink:0;
   }
   .close-btn:hover{border-color:var(--accent);color:var(--accent);}
   .detail .price{display:block;margin:2px 0 20px;}
 
   .spec-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:0;
-    border-top:1px solid var(--line);
-    margin-bottom:20px;
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+    border-top:1px solid var(--line);margin-bottom:20px;
   }
-  .spec{
-    padding:12px 0;
-    border-bottom:1px solid var(--line);
-  }
+  .spec{padding:12px 0;border-bottom:1px solid var(--line);}
   .spec:nth-child(odd){padding-right:16px;}
   .spec:nth-child(even){padding-left:16px;border-left:1px solid var(--line);}
   .spec .label{
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:0.4px;
-    color:var(--ink-soft);
-    margin-bottom:3px;
+    font-size:11px;text-transform:uppercase;letter-spacing:0.4px;color:var(--ink-soft);margin-bottom:3px;
   }
   .spec .value{font-size:14px;font-weight:500;}
 
-  .notes{
-    font-size:14px;
-    line-height:1.6;
-    color:var(--ink-soft);
-    margin-bottom:24px;
-  }
+  .notes{font-size:14px;line-height:1.6;color:var(--ink-soft);margin-bottom:24px;}
 
   .actions{display:flex;gap:10px;flex-wrap:wrap;}
   .btn{
-    font-family:'Inter',sans-serif;
-    font-size:14px;
-    font-weight:500;
-    padding:12px 20px;
-    border-radius:5px;
-    border:1px solid var(--line);
-    background:var(--card);
-    color:var(--ink);
-    cursor:pointer;
-    text-decoration:none;
-    display:inline-block;
+    font-family:'Inter',sans-serif;font-size:14px;font-weight:500;padding:12px 20px;
+    border-radius:5px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    cursor:pointer;text-decoration:none;display:inline-block;
   }
-  .btn.primary{
-    background:var(--accent);
-    border-color:var(--accent);
-    color:#fff;
-  }
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
   .btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
   .btn.ghost:hover{border-color:var(--accent);color:var(--accent-ink);}
 
-  footer{
-    padding:26px 6vw;
-    border-top:1px solid var(--line);
-    font-size:12px;
-    color:var(--ink-soft);
-  }
+  footer{padding:26px 6vw;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);}
 
-  .map-section{
-    padding:0 6vw 60px;
-  }
-  .map-section h2{
-    font-family:'Oswald',sans-serif;
-    font-size:26px;
-    font-weight:600;
-    margin:0 0 20px;
-  }
-  .find-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:22px;
-    align-items:stretch;
-  }
+  .map-section{padding:0 6vw 60px;}
+  .map-section h2{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;margin:0 0 20px;}
+  .find-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch;}
   .find-photo-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:6px;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
+    background:var(--card);border:1px solid var(--line);border-radius:6px;
+    overflow:hidden;display:flex;flex-direction:column;
   }
-  .find-photo-card .photo{
-    width:100%;
-    aspect-ratio:16/10;
-    object-fit:cover;
-    display:block;
-    background:#DDD;
-  }
+  .find-photo-card .photo{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#DDD;}
   .find-photo-card .photo.placeholder{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#9A9D99;
-    font-size:13px;
+    display:flex;align-items:center;justify-content:center;color:#9A9D99;font-size:13px;
   }
   .find-photo-card .find-body{padding:20px 22px 22px;}
-  .find-photo-card .find-body p{
-    font-size:14px;
-    line-height:1.6;
-    color:var(--ink-soft);
-    margin:0 0 14px;
-  }
+  .find-photo-card .find-body p{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 14px;}
   .find-info{font-size:13px;line-height:1.8;}
   .find-info .label{color:var(--ink-soft);display:inline-block;width:70px;}
   #map{
-    height:100%;
-    min-height:280px;
-    width:100%;
-    border-radius:6px;
-    border:1px solid var(--line);
-    background:#E4E6E3;
-    filter:var(--tile-filter);
+    height:100%;min-height:280px;width:100%;border-radius:6px;
+    border:1px solid var(--line);background:#E4E6E3;filter:var(--tile-filter);
   }
   .leaflet-popup-content-wrapper{border-radius:4px;font-family:'Inter',sans-serif;background:var(--card);color:var(--ink);}
   .leaflet-popup-tip{background:var(--card);}
   .pin-marker{
-    width:26px;height:26px;
-    border-radius:50% 50% 50% 0;
-    background:var(--accent);
-    transform:rotate(-45deg);
-    border:2px solid #fff;
-    box-shadow:0 1px 4px rgba(0,0,0,0.35);
+    width:26px;height:26px;border-radius:50% 50% 50% 0;background:var(--accent);
+    transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.35);
   }
 
   @media(max-width:520px){
@@ -481,8 +260,9 @@
   }
   @media(max-width:900px){
     .layout{flex-direction:column;}
-    .filters{width:100%;position:static;}
+    .filters{width:100%;position:static;max-height:none;}
     .find-grid{grid-template-columns:1fr;}
+    .grid{grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));}
   }
 </style>
 </head>
@@ -509,30 +289,31 @@
     <h3>Filtrer</h3>
 
     <div class="filter-group">
-      <div class="fg-title">Prix (€)</div>
-      <div class="range-row">
-        <input type="number" id="priceMin" placeholder="Min">
-        <span>—</span>
-        <input type="number" id="priceMax" placeholder="Max">
+      <div class="fg-title">Prix</div>
+      <div class="price-slider">
+        <div class="track"></div>
+        <div class="fill" id="priceFill"></div>
+        <input type="range" id="priceSliderMin">
+        <input type="range" id="priceSliderMax">
+      </div>
+      <div class="range-values">
+        <span id="priceMinLabel">0 €</span>
+        <span id="priceMaxLabel">0 €</span>
       </div>
     </div>
 
     <div class="filter-group">
       <div class="fg-title">Année</div>
-      <div class="range-row">
-        <input type="number" id="yearMin" placeholder="Min">
+      <div class="year-row">
+        <select id="yearMinSelect"><option value="">De</option></select>
         <span>—</span>
-        <input type="number" id="yearMax" placeholder="Max">
+        <select id="yearMaxSelect"><option value="">À</option></select>
       </div>
     </div>
 
     <div class="filter-group">
       <div class="fg-title">Kilométrage</div>
-      <div class="range-row">
-        <input type="number" id="kmMin" placeholder="Min">
-        <span>—</span>
-        <input type="number" id="kmMax" placeholder="Max">
-      </div>
+      <div class="checkbox-list" id="kmBrackets"></div>
     </div>
 
     <div class="filter-group">
@@ -608,6 +389,9 @@
 
   let cars = [];
   let activeFilters = { marque:new Set(), carburant:new Set(), transmission:new Set(), couleur:new Set(), options:new Set() };
+  let priceBounds = {min:0, max:100000};
+  let priceSelected = {min:0, max:100000};
+  let kmBracketSelected = null; // {min, max}
 
   // --- Thème clair / sombre ---
   const themeToggle = document.getElementById('themeToggle');
@@ -649,9 +433,7 @@
     const set = new Set();
     cars.forEach(c => {
       const raw = (c["Options"] || "").trim();
-      if(raw){
-        raw.split(",").forEach(o => { const v = o.trim(); if(v) set.add(v); });
-      }
+      if(raw){ raw.split(",").forEach(o => { const v = o.trim(); if(v) set.add(v); }); }
     });
     return Array.from(set).sort();
   }
@@ -670,9 +452,92 @@
         const val = e.target.value;
         if(e.target.checked) activeFilters[key].add(val);
         else activeFilters[key].delete(val);
-        applyFilters();
+        render();
       });
     });
+  }
+
+  // --- Slider prix ---
+  function setupPriceSlider(){
+    const prices = cars.map(c => num(c["Prix (€)"])).filter(p => p > 0);
+    priceBounds.min = prices.length ? Math.floor(Math.min(...prices)/100)*100 : 0;
+    priceBounds.max = prices.length ? Math.ceil(Math.max(...prices)/100)*100 : 100000;
+    priceSelected.min = priceBounds.min;
+    priceSelected.max = priceBounds.max;
+
+    const sMin = document.getElementById('priceSliderMin');
+    const sMax = document.getElementById('priceSliderMax');
+    [sMin, sMax].forEach(s => {
+      s.min = priceBounds.min;
+      s.max = priceBounds.max;
+      s.step = 100;
+    });
+    sMin.value = priceBounds.min;
+    sMax.value = priceBounds.max;
+    updatePriceUI();
+
+    sMin.addEventListener('input', ()=>{
+      if(parseInt(sMin.value) > parseInt(sMax.value) - 100) sMin.value = parseInt(sMax.value) - 100;
+      priceSelected.min = parseInt(sMin.value);
+      updatePriceUI(); render();
+    });
+    sMax.addEventListener('input', ()=>{
+      if(parseInt(sMax.value) < parseInt(sMin.value) + 100) sMax.value = parseInt(sMin.value) + 100;
+      priceSelected.max = parseInt(sMax.value);
+      updatePriceUI(); render();
+    });
+  }
+
+  function updatePriceUI(){
+    const range = priceBounds.max - priceBounds.min || 1;
+    const leftPct = ((priceSelected.min - priceBounds.min) / range) * 100;
+    const rightPct = ((priceSelected.max - priceBounds.min) / range) * 100;
+    document.getElementById('priceFill').style.left = leftPct + '%';
+    document.getElementById('priceFill').style.width = (rightPct - leftPct) + '%';
+    document.getElementById('priceMinLabel').textContent = fmtPrice(priceSelected.min);
+    document.getElementById('priceMaxLabel').textContent = fmtPrice(priceSelected.max);
+  }
+
+  // --- Kilométrage en paliers ---
+  function setupKmBrackets(){
+    const brackets = [
+      {label:"Jusqu'à 10 000 km", min:0, max:10000},
+      {label:"Jusqu'à 25 000 km", min:0, max:25000},
+      {label:"Jusqu'à 50 000 km", min:0, max:50000},
+      {label:"Jusqu'à 100 000 km", min:0, max:100000},
+      {label:"Plus de 100 000 km", min:100000, max:Infinity},
+    ];
+    const container = document.getElementById('kmBrackets');
+    container.innerHTML = brackets.map((b,i) => `
+      <label>
+        <input type="radio" name="kmBracket" data-min="${b.min}" data-max="${b.max === Infinity ? '' : b.max}">
+        ${b.label}
+      </label>
+    `).join("");
+    container.querySelectorAll('input').forEach(input => {
+      input.addEventListener('change', (e)=>{
+        const min = parseFloat(e.target.dataset.min);
+        const maxAttr = e.target.dataset.max;
+        const max = maxAttr === "" ? Infinity : parseFloat(maxAttr);
+        kmBracketSelected = {min, max};
+        render();
+      });
+    });
+  }
+
+  // --- Année en menus déroulants ---
+  function setupYearSelects(){
+    const years = cars.map(c => parseInt(c["Année"])).filter(y => !isNaN(y)).sort((a,b)=>a-b);
+    const minY = years.length ? years[0] : new Date().getFullYear()-10;
+    const maxY = years.length ? years[years.length-1] : new Date().getFullYear();
+    const selMin = document.getElementById('yearMinSelect');
+    const selMax = document.getElementById('yearMaxSelect');
+    for(let y = minY; y <= maxY; y++){
+      selMin.innerHTML += `<option value="${y}">${y}</option>`;
+      selMax.innerHTML += `<option value="${y}">${y}</option>`;
+    }
+    selMin.addEventListener('change', render);
+    selMax.addEventListener('change', render);
   }
 
   function buildFilters(){
@@ -685,41 +550,43 @@
       document.getElementById('optionsGroup').style.display = 'block';
       buildCheckboxGroup('filterOptions', opts, 'options');
     }
-    ['priceMin','priceMax','yearMin','yearMax','kmMin','kmMax'].forEach(id=>{
-      document.getElementById(id).addEventListener('input', applyFilters);
-    });
+    setupPriceSlider();
+    setupKmBrackets();
+    setupYearSelects();
     document.getElementById('resetFilters').addEventListener('click', resetFilters);
   }
 
   function resetFilters(){
     activeFilters = { marque:new Set(), carburant:new Set(), transmission:new Set(), couleur:new Set(), options:new Set() };
-    document.querySelectorAll('.checkbox-list input').forEach(cb => cb.checked = false);
-    ['priceMin','priceMax','yearMin','yearMax','kmMin','kmMax'].forEach(id=> document.getElementById(id).value = '');
-    applyFilters();
+    document.querySelectorAll('.checkbox-list input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.checkbox-list input[type=radio]').forEach(r => r.checked = false);
+    kmBracketSelected = null;
+    document.getElementById('yearMinSelect').value = "";
+    document.getElementById('yearMaxSelect').value = "";
+    priceSelected.min = priceBounds.min;
+    priceSelected.max = priceBounds.max;
+    document.getElementById('priceSliderMin').value = priceBounds.min;
+    document.getElementById('priceSliderMax').value = priceBounds.max;
+    updatePriceUI();
+    render();
   }
 
   function getFilteredCars(){
-    const priceMin = parseFloat(document.getElementById('priceMin').value);
-    const priceMax = parseFloat(document.getElementById('priceMax').value);
-    const yearMin = parseFloat(document.getElementById('yearMin').value);
-    const yearMax = parseFloat(document.getElementById('yearMax').value);
-    const kmMin = parseFloat(document.getElementById('kmMin').value);
-    const kmMax = parseFloat(document.getElementById('kmMax').value);
+    const yearMin = parseInt(document.getElementById('yearMinSelect').value);
+    const yearMax = parseInt(document.getElementById('yearMaxSelect').value);
 
     return cars.filter(c => {
       if((c["Statut"]||"").trim().toLowerCase() === "vendu") return false;
 
       const price = num(c["Prix (€)"]);
-      if(!isNaN(priceMin) && price < priceMin) return false;
-      if(!isNaN(priceMax) && price > priceMax) return false;
+      if(price < priceSelected.min || price > priceSelected.max) return false;
 
-      const year = num(c["Année"]);
+      const year = parseInt(c["Année"]);
       if(!isNaN(yearMin) && year < yearMin) return false;
       if(!isNaN(yearMax) && year > yearMax) return false;
 
       const km = num(c["Kilométrage (km)"]);
-      if(!isNaN(kmMin) && km < kmMin) return false;
-      if(!isNaN(kmMax) && km > kmMax) return false;
+      if(kmBracketSelected && (km < kmBracketSelected.min || km > kmBracketSelected.max)) return false;
 
       if(activeFilters.marque.size && !activeFilters.marque.has((c["Marque"]||"").trim())) return false;
       if(activeFilters.carburant.size && !activeFilters.carburant.has((c["Carburant"]||"").trim())) return false;
@@ -733,10 +600,6 @@
       }
       return true;
     });
-  }
-
-  function applyFilters(){
-    render();
   }
 
   function render(){
