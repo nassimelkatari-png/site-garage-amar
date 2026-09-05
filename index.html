@@ -765,14 +765,22 @@
     if(imgs.length > 1){
       const track = document.getElementById('galleryTrack');
       const dots = document.querySelectorAll('#galDots .dot');
+      const prevBtn = document.getElementById('galPrev');
+      const nextBtn = document.getElementById('galNext');
+      const updateArrows = ()=>{
+        prevBtn.style.display = galleryIndex === 0 ? 'none' : 'flex';
+        nextBtn.style.display = galleryIndex === imgs.length - 1 ? 'none' : 'flex';
+      };
       const goTo = (i)=>{
-        galleryIndex = (i + imgs.length) % imgs.length;
+        galleryIndex = Math.max(0, Math.min(imgs.length - 1, i));
         track.style.transform = `translateX(-${galleryIndex * 100}%)`;
         dots.forEach((d, idx)=> d.classList.toggle('active', idx === galleryIndex));
+        updateArrows();
       };
-      document.getElementById('galPrev').addEventListener('click', ()=> goTo(galleryIndex - 1));
-      document.getElementById('galNext').addEventListener('click', ()=> goTo(galleryIndex + 1));
+      prevBtn.addEventListener('click', ()=> goTo(galleryIndex - 1));
+      nextBtn.addEventListener('click', ()=> goTo(galleryIndex + 1));
       dots.forEach(d => d.addEventListener('click', ()=> goTo(parseInt(d.dataset.i))));
+      updateArrows();
     }
 
     document.getElementById('overlay').classList.add('open');
