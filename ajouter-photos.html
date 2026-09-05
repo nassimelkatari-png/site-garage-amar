@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajouter des photos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#EEF0EF;
+    --ink:#181C1F;
+    --ink-soft:#565C5F;
+    --card:#FFFFFF;
+    --line:#DADDD9;
+    --accent:#B8631E;
+    --accent-ink:#7A4114;
+    --ok-bg:#E4EFE0;
+    --ok-ink:#2E5A22;
+    --err-bg:#F5E1DC;
+    --err-ink:#9C3A1E;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .site-name{font-family:'Oswald',sans-serif;font-weight:700;}
+
+  header{
+    padding:28px 6vw 20px;
+    border-bottom:1px solid var(--line);
+  }
+  header .brand{font-size:22px;text-transform:uppercase;letter-spacing:0.5px;}
+  header p{color:var(--ink-soft);font-size:14px;margin:6px 0 0;}
+
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+  }
+
+  h1{
+    font-family:'Oswald',sans-serif;
+    font-size:30px;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .subtitle{color:var(--ink-soft);font-size:15px;line-height:1.6;margin:0 0 32px;}
+
+  .field{margin-bottom:22px;}
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .field input[type="text"]{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--card);
+    color:var(--ink);
+  }
+  .field .hint{font-size:12px;color:var(--ink-soft);margin-top:6px;}
+
+  .dropzone{
+    border:2px dashed var(--line);
+    border-radius:8px;
+    padding:40px 20px;
+    text-align:center;
+    cursor:pointer;
+    background:var(--card);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .dropzone.drag{border-color:var(--accent);background:#FBF3EC;}
+  .dropzone p{margin:0;color:var(--ink-soft);font-size:14px;}
+  .dropzone strong{color:var(--ink);}
+  #fileInput{display:none;}
+
+  .previews{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(90px, 1fr));
+    gap:10px;
+    margin-top:16px;
+  }
+  .preview-item{
+    position:relative;
+    aspect-ratio:1;
+    border-radius:6px;
+    overflow:hidden;
+    background:#DDD;
+  }
+  .preview-item img{width:100%;height:100%;object-fit:cover;display:block;}
+  .preview-item .remove{
+    position:absolute;top:4px;right:4px;
+    width:20px;height:20px;border-radius:50%;
+    background:rgba(20,22,20,0.65);color:#fff;
+    border:none;font-size:12px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .preview-item .status{
+    position:absolute;bottom:0;left:0;right:0;
+    font-size:10px;text-align:center;padding:3px 0;
+    color:#fff;background:rgba(20,22,20,0.55);
+  }
+  .preview-item .status.ok{background:rgba(46,90,34,0.85);}
+  .preview-item .status.err{background:rgba(156,58,30,0.85);}
+
+  .btn{
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    font-weight:500;
+    padding:13px 24px;
+    border-radius:6px;
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+    cursor:pointer;
+    margin-top:24px;
+    width:100%;
+  }
+  .btn:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+  .btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .result{
+    margin-top:32px;
+    padding:20px;
+    background:var(--ok-bg);
+    border-radius:8px;
+    display:none;
+  }
+  .result.show{display:block;}
+  .result h2{
+    font-family:'Oswald',sans-serif;
+    font-size:17px;
+    font-weight:600;
+    margin:0 0 10px;
+    color:var(--ok-ink);
+  }
+  .result textarea{
+    width:100%;
+    min-height:90px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    resize:vertical;
+    background:var(--card);
+    color:var(--ink);
+  }
+  .result .copy-btn{
+    margin-top:10px;
+    font-size:13px;
+    padding:9px 16px;
+    width:auto;
+  }
+  .result p{font-size:13px;color:var(--ink-soft);margin:12px 0 0;line-height:1.6;}
+
+  .error-box{
+    margin-top:16px;
+    padding:14px 16px;
+    background:var(--err-bg);
+    color:var(--err-ink);
+    border-radius:6px;
+    font-size:13px;
+    display:none;
+  }
+  .error-box.show{display:block;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand site-name">GARAGE DEMO</div>
+  <p>Outil interne — ajout de photos véhicules</p>
+</header>
+
+<main>
+  <h1 class="site-name">Ajouter des photos</h1>
+  <p class="subtitle">Indique l'ID du véhicule, dépose ses photos, puis colle les liens obtenus dans la colonne "Lien photos" du tableau du stock.</p>
+
+  <div class="field">
+    <label for="carId">ID du véhicule</label>
+    <input type="text" id="carId" placeholder="ex : V006">
+    <div class="hint">C'est l'identifiant utilisé dans le tableau du stock (colonne "ID").</div>
+  </div>
+
+  <div class="field">
+    <label>Photos</label>
+    <div class="dropzone" id="dropzone">
+      <p><strong>Glisse tes photos ici</strong><br>ou clique pour les choisir</p>
+      <input type="file" id="fileInput" accept="image/*" multiple>
+    </div>
+    <div class="previews" id="previews"></div>
+  </div>
+
+  <button class="btn" id="uploadBtn" disabled>Envoyer les photos</button>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="result" id="result">
+    <h2>Liens générés</h2>
+    <textarea id="linksOutput" readonly></textarea>
+    <button class="btn copy-btn" id="copyBtn">Copier les liens</button>
+    <p>Colle ce texte dans la cellule "Lien photos" de la ligne correspondante, dans le Google Sheet du stock.</p>
+  </div>
+</main>
+
+<script>
+  const CLOUD_NAME = "d4vn2ook";
+  const UPLOAD_PRESET = "Nared Studio";
+
+  let files = [];
+
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const previews = document.getElementById('previews');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const carIdInput = document.getElementById('carId');
+  const errorBox = document.getElementById('errorBox');
+  const result = document.getElementById('result');
+  const linksOutput = document.getElementById('linksOutput');
+
+  dropzone.addEventListener('click', ()=> fileInput.click());
+  dropzone.addEventListener('dragover', (e)=>{ e.preventDefault(); dropzone.classList.add('drag'); });
+  dropzone.addEventListener('dragleave', ()=> dropzone.classList.remove('drag'));
+  dropzone.addEventListener('drop', (e)=>{
+    e.preventDefault();
+    dropzone.classList.remove('drag');
+    addFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', ()=> addFiles(fileInput.files));
+
+  function addFiles(fileList){
+    Array.from(fileList).forEach(f=>{
+      if(!f.type.startsWith('image/')) return;
+      files.push({ file:f, status:'pending' });
+    });
+    renderPreviews();
+    updateUploadBtn();
+  }
+
+  function renderPreviews(){
+    previews.innerHTML = files.map((item, i) => `
+      <div class="preview-item" data-i="${i}">
+        <img src="${URL.createObjectURL(item.file)}">
+        <button class="remove" data-i="${i}">&times;</button>
+        ${item.status !== 'pending' ? `<div class="status ${item.status}">${item.status === 'ok' ? 'Envoyée' : item.status === 'uploading' ? '...' : 'Erreur'}</div>` : ''}
+      </div>`).join("");
+
+    previews.querySelectorAll('.remove').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        files.splice(parseInt(btn.dataset.i), 1);
+        renderPreviews();
+        updateUploadBtn();
+      });
+    });
+  }
+
+  function updateUploadBtn(){
+    uploadBtn.disabled = files.length === 0 || carIdInput.value.trim() === "";
+  }
+  carIdInput.addEventListener('input', updateUploadBtn);
+
+  uploadBtn.addEventListener('click', async ()=>{
+    errorBox.classList.remove('show');
+    result.classList.remove('show');
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = "Envoi en cours...";
+
+    const carId = carIdInput.value.trim();
+    const urls = [];
+    let hadError = false;
+
+    for(let i = 0; i < files.length; i++){
+      files[i].status = 'uploading';
+      renderPreviews();
+
+      try{
+        const formData = new FormData();
+        formData.append('file', files[i].file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        formData.append('folder', carId);
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if(data.secure_url){
+          urls.push(data.secure_url);
+          files[i].status = 'ok';
+        } else {
+          files[i].status = 'err';
+          hadError = true;
+        }
+      } catch(err){
+        files[i].status = 'err';
+        hadError = true;
+      }
+      renderPreviews();
+    }
+
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = "Envoyer les photos";
+
+    if(urls.length > 0){
+      linksOutput.value = urls.join(", ");
+      result.classList.add('show');
+    }
+    if(hadError){
+      errorBox.textContent = "Certaines photos n'ont pas pu être envoyées. Vérifie ta connexion et réessaie pour celles en erreur.";
+      errorBox.classList.add('show');
+    }
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    linksOutput.select();
+    document.execCommand('copy');
+    const btn = document.getElementById('copyBtn');
+    const original = btn.textContent;
+    btn.textContent = "Copié !";
+    setTimeout(()=> btn.textContent = original, 1500);
+  });
+</script>
+
+</body>
+</html>
