@@ -206,6 +206,17 @@
   .overlay.open{display:flex;}
   .detail{background:var(--card);max-width:760px;width:100%;border-radius:6px;overflow:hidden;}
   .detail img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#DDD;}
+
+  .gallery{position:relative;background:#DDD;}
+  .gallery .gallery-track{display:flex;overflow-x:hidden;scroll-behavior:smooth;}
+  .gallery img{width:100%;flex:0 0 100%;aspect-ratio:16/9;object-fit:cover;display:block;}
+  .gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:none;background:rgba(20,22,20,0.55);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .gallery-arrow:hover{background:rgba(20,22,20,0.8);}
+  .gallery-arrow.prev{left:12px;}
+  .gallery-arrow.next{right:12px;}
+  .gallery-dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px;}
+  .gallery-dots .dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.55);cursor:pointer;}
+  .gallery-dots .dot.active{background:#fff;}
   .detail-body{padding:28px 34px 34px;}
   .detail-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px;}
   .detail h2{font-family:'Oswald',sans-serif;font-size:28px;font-weight:600;margin:0;}
@@ -424,6 +435,13 @@
     const m = link.match(/\/d\/([a-zA-Z0-9_-]+)/) || link.match(/id=([a-zA-Z0-9_-]+)/);
     if(!m) return null;
     return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w800";
+  }
+
+  function driveImageUrls(links){
+    if(!links) return [];
+    return links.split(",")
+      .map(l => driveImageUrl(l.trim()))
+      .filter(Boolean);
   }
 
   function fmtPrice(v){
@@ -666,7 +684,7 @@
     count.textContent = visible.length + " véhicule" + (visible.length > 1 ? "s" : "");
 
     grid.innerHTML = visible.map((c) => {
-      const img = driveImageUrl(c["Lien photos"]);
+      const img = driveImageUrls(c["Lien photos"])[0] || null;
       const statut = (c["Statut"]||"").trim();
       const badgeClass = statut.toLowerCase() === "réservé" ? "hold" : "ok";
       return `
@@ -687,14 +705,34 @@
     });
   }
 
+  let galleryIndex = 0;
+
   function openDetail(id){
     const c = cars.find(x => x["ID"] === id);
     if(!c) return;
-    const img = driveImageUrl(c["Lien photos"]);
+    const imgs = driveImageUrls(c["Lien photos"]);
+    galleryIndex = 0;
     const doc = c["Lien documents"];
     const detail = document.getElementById('detail');
+
+    let galleryHtml = "";
+    if(imgs.length > 0){
+      galleryHtml = `
+        <div class="gallery">
+          <div class="gallery-track" id="galleryTrack">
+            ${imgs.map(src => `<img src="${src}" alt="${c['Marque']} ${c['Modèle']}">`).join("")}
+          </div>
+          ${imgs.length > 1 ? `
+            <button class="gallery-arrow prev" id="galPrev">&#8249;</button>
+            <button class="gallery-arrow next" id="galNext">&#8250;</button>
+            <div class="gallery-dots" id="galDots">
+              ${imgs.map((_, i) => `<div class="dot${i===0?' active':''}" data-i="${i}"></div>`).join("")}
+            </div>` : ""}
+        </div>`;
+    }
+
     detail.innerHTML = `
-      ${img ? `<img src="${img}" alt="${c['Marque']} ${c['Modèle']}">` : ""}
+      ${galleryHtml}
       <div class="detail-body">
         <div class="detail-top">
           <h2 class="site-name">${c["Marque"]||""} ${c["Modèle"]||""}</h2>
@@ -723,6 +761,20 @@
           ${doc ? `<a class="btn ghost" href="${doc}" target="_blank" rel="noopener">Voir la fiche complète</a>` : ""}
         </div>
       </div>`;
+
+    if(imgs.length > 1){
+      const track = document.getElementById('galleryTrack');
+      const dots = document.querySelectorAll('#galDots .dot');
+      const goTo = (i)=>{
+        galleryIndex = (i + imgs.length) % imgs.length;
+        track.style.transform = `translateX(-${galleryIndex * 100}%)`;
+        dots.forEach((d, idx)=> d.classList.toggle('active', idx === galleryIndex));
+      };
+      document.getElementById('galPrev').addEventListener('click', ()=> goTo(galleryIndex - 1));
+      document.getElementById('galNext').addEventListener('click', ()=> goTo(galleryIndex + 1));
+      dots.forEach(d => d.addEventListener('click', ()=> goTo(parseInt(d.dataset.i))));
+    }
+
     document.getElementById('overlay').classList.add('open');
     document.getElementById('closeBtn').addEventListener('click', closeDetail);
   }
