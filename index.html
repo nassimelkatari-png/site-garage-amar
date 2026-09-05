@@ -183,6 +183,29 @@
   }
   .card:hover{border-color:var(--accent);}
   .card .thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#DDD;}
+
+  .thumb-wrap{position:relative;overflow:hidden;aspect-ratio:4/3;background:#DDD;}
+  .thumb-track{display:flex;height:100%;transition:transform .2s ease;}
+  .thumb-track img{width:100%;flex:0 0 100%;height:100%;object-fit:cover;display:block;}
+  .card-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:26px;height:26px;border-radius:50%;border:none;
+    background:rgba(20,22,20,0.55);color:#fff;font-size:13px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    opacity:0;transition:opacity .15s ease;
+  }
+  .thumb-wrap:hover .card-arrow{opacity:1;}
+  .card-arrow:hover{background:rgba(20,22,20,0.8);}
+  .card-arrow.prev{left:8px;}
+  .card-arrow.next{right:8px;}
+  .card-dots{
+    position:absolute;bottom:8px;left:0;right:0;
+    display:flex;justify-content:center;gap:4px;
+    opacity:0;transition:opacity .15s ease;
+  }
+  .thumb-wrap:hover .card-dots{opacity:1;}
+  .card-dots .dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.6);}
+  .card-dots .dot.active{background:#fff;}
   .card .thumb.placeholder{
     display:flex;align-items:center;justify-content:center;color:#9A9D99;font-size:13px;
   }
@@ -684,13 +707,32 @@
     count.textContent = visible.length + " véhicule" + (visible.length > 1 ? "s" : "");
 
     grid.innerHTML = visible.map((c) => {
-      const img = driveImageUrls(c["Lien photos"])[0] || null;
+      const imgs = driveImageUrls(c["Lien photos"]);
       const statut = (c["Statut"]||"").trim();
       const badgeClass = statut.toLowerCase() === "réservé" ? "hold" : "ok";
+
+      let thumbHtml;
+      if(imgs.length === 0){
+        thumbHtml = `<div class="thumb placeholder">Photo à venir</div>`;
+      } else if(imgs.length === 1){
+        thumbHtml = `<img class="thumb" src="${imgs[0]}" alt="${c['Marque']} ${c['Modèle']}">`;
+      } else {
+        thumbHtml = `
+          <div class="thumb-wrap" data-card-idx="0">
+            <div class="thumb-track">
+              ${imgs.map(src => `<img src="${src}" alt="${c['Marque']} ${c['Modèle']}">`).join("")}
+            </div>
+            <button class="card-arrow prev" style="display:none;">&#8249;</button>
+            <button class="card-arrow next">&#8250;</button>
+            <div class="card-dots">
+              ${imgs.map((_, i) => `<div class="dot${i===0?' active':''}"></div>`).join("")}
+            </div>
+          </div>`;
+      }
+
       return `
         <div class="card" data-id="${c["ID"]}">
-          ${img ? `<img class="thumb" src="${img}" alt="${c['Marque']} ${c['Modèle']}">`
-                : `<div class="thumb placeholder">Photo à venir</div>`}
+          ${thumbHtml}
           <div class="body">
             <span class="badge ${badgeClass}">${statut}</span>
             <h3>${c["Marque"]||""} ${c["Modèle"]||""}</h3>
@@ -702,6 +744,30 @@
 
     document.querySelectorAll('.card').forEach(el=>{
       el.addEventListener('click', ()=> openDetail(el.dataset.id));
+    });
+
+    document.querySelectorAll('.thumb-wrap').forEach(wrap=>{
+      const track = wrap.querySelector('.thumb-track');
+      const total = track.children.length;
+      const prevBtn = wrap.querySelector('.card-arrow.prev');
+      const nextBtn = wrap.querySelector('.card-arrow.next');
+      const dots = wrap.querySelectorAll('.card-dots .dot');
+      const goTo = (i)=>{
+        const idx = Math.max(0, Math.min(total - 1, i));
+        wrap.dataset.cardIdx = idx;
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        dots.forEach((d, di)=> d.classList.toggle('active', di === idx));
+        prevBtn.style.display = idx === 0 ? 'none' : 'flex';
+        nextBtn.style.display = idx === total - 1 ? 'none' : 'flex';
+      };
+      prevBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        goTo(parseInt(wrap.dataset.cardIdx) - 1);
+      });
+      nextBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        goTo(parseInt(wrap.dataset.cardIdx) + 1);
+      });
     });
   }
 
