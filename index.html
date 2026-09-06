@@ -68,11 +68,7 @@
     flex-wrap:wrap;
     gap:10px;
   }
-  .brand{font-size:26px;letter-spacing:0.5px;text-transform:uppercase;}
-  .brand small{
-    display:block;font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
-    text-transform:none;color:var(--ink-soft);letter-spacing:0;margin-top:2px;
-  }
+  .brand-logo{height:46px;width:auto;display:block;}
   nav.top{display:flex;align-items:center;gap:16px;}
   nav.top a{
     font-size:14px;color:var(--ink);text-decoration:none;
@@ -407,9 +403,7 @@
 <body data-theme="light">
 
 <header class="top">
-  <div class="brand site-name">GARAGE DEMO
-    <small data-i18n="brand_small">Modèle de site — remplacer nom, logo et coordonnées</small>
-  </div>
+  <img src="logo.png" alt="AFA Cars" class="brand-logo">
   <nav class="top">
     <a href="#" data-i18n="nav_catalog">Catalogue</a>
     <a href="#" data-i18n="nav_contact">Contact</a>
