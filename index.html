@@ -285,7 +285,7 @@
     font-family:'Quicksand',sans-serif;
     font-size:12.5px;font-weight:600;color:var(--ink-soft);
     background:#F2F3F1;border:1px solid var(--line);
-    padding:5px 11px;border-radius:8px;white-space:nowrap;
+    padding:5px 11px;border-radius:0;white-space:nowrap;
   }
   [data-theme="dark"] .chip{background:var(--card);}
   .chip.chip-good{background:var(--ok-bg);color:var(--ok-ink);border-color:transparent;}
@@ -883,6 +883,7 @@
     if(c["Kilométrage (km)"]) chipValues.push(fmtKm(c["Kilométrage (km)"]));
     if(c["Boîte de vitesse"]) chipValues.push(c["Boîte de vitesse"]);
     if(c["Carburant"]) chipValues.push(c["Carburant"]);
+    if(c["Nombre de places"]) chipValues.push(c["Nombre de places"] + " places");
     let chipsHtml = chipValues.map(v => `<span class="chip">${v}</span>`).join("");
     if(c["Garantie"]) chipsHtml += `<span class="chip chip-good">${c["Garantie"]} de garantie</span>`;
 
@@ -1009,6 +1010,7 @@
           <div class="spec"><div class="label">Kilométrage</div><div class="value">${fmtKm(c["Kilométrage (km)"])}</div></div>
           <div class="spec"><div class="label">Carburant</div><div class="value">${c["Carburant"]||"—"}</div></div>
           <div class="spec"><div class="label">Boîte</div><div class="value">${c["Boîte de vitesse"]||"—"}</div></div>
+          <div class="spec"><div class="label">Nombre de places</div><div class="value">${c["Nombre de places"]||"—"}</div></div>
           <div class="spec"><div class="label">Couleur</div><div class="value">${c["Couleur"]||"—"}</div></div>
           <div class="spec"><div class="label">Garantie</div><div class="value">${c["Garantie"]||"—"}</div></div>
           <div class="spec"><div class="label">Dernier contrôle technique</div><div class="value">${c["Date dernier contrôle technique"]||"—"}</div></div>
