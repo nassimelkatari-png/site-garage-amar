@@ -83,10 +83,9 @@
   .lang-switch{position:relative;}
   .lang-current-btn{
     display:flex;align-items:center;gap:5px;
-    border:1px solid var(--line);background:var(--card);border-radius:20px;
-    padding:6px 10px;cursor:pointer;font-size:15px;line-height:1;
+    border:none;background:none;
+    padding:6px 4px;cursor:pointer;font-size:18px;line-height:1;
   }
-  .lang-current-btn:hover{border-color:var(--accent);}
   .lang-caret{width:12px;height:12px;stroke:var(--ink-soft);fill:none;stroke-width:2;transition:transform .15s ease;}
   .lang-switch.open .lang-caret{transform:rotate(180deg);}
   .lang-dropdown{
@@ -105,10 +104,11 @@
 
   .theme-toggle{
     width:38px;height:38px;border-radius:50%;
-    border:1px solid var(--line);background:var(--card);color:var(--ink);
-    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;
+    border:1px solid var(--line);background:var(--card);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
   }
   .theme-toggle:hover{border-color:var(--accent);}
+  .theme-toggle svg{width:17px;height:17px;stroke:var(--ink-soft);fill:none;stroke-width:1.8;}
 
   /* --- Favoris : bouton flottant bas-gauche --- */
   .fav-float-btn{
@@ -150,14 +150,7 @@
   .fav-page-body{padding:30px 6vw 80px;}
   .fav-empty-state{padding:60px 0;text-align:center;color:var(--ink-soft);font-size:15px;}
 
-  .hero{padding:54px 6vw 40px;max-width:760px;}
-  .hero h1{
-    font-family:'Oswald',sans-serif;font-weight:600;font-size:clamp(32px,4.2vw,48px);
-    line-height:1.08;margin:0 0 14px;
-  }
-  .hero p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin:0;max-width:520px;}
-
-  .layout{display:flex;gap:32px;padding:0 6vw 80px;align-items:flex-start;}
+  .layout{display:flex;gap:32px;padding:32px 6vw 80px;align-items:flex-start;}
 
   .filters{
     width:260px;flex-shrink:0;background:var(--card);border:1px solid var(--line);
@@ -431,14 +424,11 @@
         <button data-lang="en">🇬🇧 English</button>
       </div>
     </div>
-    <button class="theme-toggle" id="themeToggle" title="Changer de thème">🌙</button>
+    <button class="theme-toggle" id="themeToggle" title="Changer de thème">
+      <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </nav>
 </header>
-
-<section class="hero">
-  <h1 class="site-name" data-i18n="hero_title">Le stock, vu clair.</h1>
-  <p data-i18n="hero_text">Chaque véhicule de notre sélection, ses documents et sa disponibilité — mis à jour en direct. Cliquez sur une fiche pour tous les détails et prendre rendez-vous.</p>
-</section>
 
 <div class="layout">
   <aside class="filters" id="filters">
@@ -812,9 +802,11 @@
 
   // --- Thème clair / sombre ---
   const themeToggle = document.getElementById('themeToggle');
+  const MOON_ICON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  const SUN_ICON = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
   function setTheme(t){
     document.body.setAttribute('data-theme', t);
-    themeToggle.textContent = t === 'dark' ? '☀️' : '🌙';
+    document.getElementById('themeIcon').innerHTML = t === 'dark' ? SUN_ICON : MOON_ICON;
   }
   themeToggle.addEventListener('click', ()=>{
     const current = document.body.getAttribute('data-theme');
