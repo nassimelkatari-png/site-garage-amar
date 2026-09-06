@@ -68,7 +68,7 @@
     flex-wrap:wrap;
     gap:10px;
   }
-  .brand-logo{height:56px;width:auto;display:block;}
+  .brand-logo{height:100px;width:auto;display:block;}
   nav.top{display:flex;align-items:center;gap:16px;}
   nav.top a{
     font-size:14px;color:var(--ink);text-decoration:none;
@@ -367,7 +367,7 @@
     background:var(--card);border:1px solid var(--line);border-radius:6px;
     overflow:hidden;display:flex;flex-direction:column;
   }
-  .find-photo-card .photo{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#DDD;}
+  .find-photo-card .photo{width:100%;height:320px;object-fit:cover;display:block;background:#DDD;}
   .find-photo-card .photo.placeholder{
     display:flex;align-items:center;justify-content:center;color:#9A9D99;font-size:13px;
   }
@@ -376,7 +376,7 @@
   .find-info{font-size:13px;line-height:1.8;}
   .find-info .label{color:var(--ink-soft);display:inline-block;width:70px;}
   #map{
-    height:100%;min-height:280px;width:100%;border-radius:6px;
+    height:320px;width:100%;border-radius:6px;
     border:1px solid var(--line);background:#E4E6E3;filter:var(--tile-filter);
   }
   .leaflet-popup-content-wrapper{border-radius:4px;font-family:'Inter',sans-serif;background:var(--card);color:var(--ink);}
@@ -505,7 +505,6 @@
     <div class="find-photo-card">
       <img class="photo" src="garage-photo.jpg" alt="Façade du garage">
       <div class="find-body">
-        <p data-i18n="find_intro">Un accueil sans détour : venez voir le véhicule qui vous intéresse, poser vos questions, discuter du financement. Parking sur place.</p>
         <div class="find-info">
           <div><span class="label" data-i18n="find_address_label">Adresse</span>Mechelsesteenweg 187, 3020 Herent</div>
           <div><span class="label" data-i18n="find_hours_label">Horaires</span><span data-i18n="find_hours_value">Sur rendez-vous</span></div>
