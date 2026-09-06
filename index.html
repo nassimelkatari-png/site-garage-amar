@@ -60,10 +60,10 @@
   }
   .site-name{font-family:'Oswald',sans-serif;font-weight:700;}
   header.top{
-    padding:16px 6vw;
+    padding:16px 6vw 12px;
     border-bottom:1px solid var(--line);
     display:flex;
-    align-items:center;
+    align-items:flex-end;
     justify-content:space-between;
     flex-wrap:wrap;
     gap:10px;
@@ -358,8 +358,6 @@
   .btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
   .btn.ghost:hover{border-color:var(--accent);color:var(--accent-ink);}
 
-  footer{padding:26px 6vw;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);}
-
   .map-section{padding:0 6vw 60px;}
   .map-section h2{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;margin:0 0 20px;}
   .find-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch;}
@@ -514,10 +512,6 @@
     <div id="map"></div>
   </div>
 </section>
-
-<footer data-i18n="footer_text">
-  Ce site lit automatiquement le tableau du stock — ajoutez une voiture dans le Google Sheet, elle apparaît ici sans autre manipulation.
-</footer>
 
 <!-- Bouton flottant favoris -->
 <button class="fav-float-btn" id="favFloatBtn" title="Voir mes favoris">
