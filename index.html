@@ -28,8 +28,8 @@
     --ok-ink:#2E5A22;
     --hold-bg:#F5E9D6;
     --hold-ink:#8A5A0E;
-    --sold-bg:#E7E7E5;
-    --sold-ink:#4A4E4A;
+    --sold-bg:#F6DEDB;
+    --sold-ink:#A23B2E;
     --tile-filter:none;
   }
   [data-theme="dark"]{
@@ -45,8 +45,8 @@
     --ok-ink:#7FCB8A;
     --hold-bg:#3A2F14;
     --hold-ink:#E0AE5C;
-    --sold-bg:#2A2E30;
-    --sold-ink:#B7BBB8;
+    --sold-bg:#3A211D;
+    --sold-ink:#E38574;
     --tile-filter:invert(0.92) hue-rotate(180deg) brightness(0.95) contrast(0.9);
   }
   *{box-sizing:border-box;}
@@ -177,25 +177,17 @@
   .year-row span{font-size:12px;color:var(--ink-soft);}
 
   .checkbox-list-wrap{position:relative;}
-  .checkbox-list-wrap::after{
-    content:"";
-    position:absolute;
-    left:0;right:6px;bottom:0;
-    height:22px;
-    background:linear-gradient(to bottom, transparent, var(--card));
-    pointer-events:none;
-    border-radius:0 0 4px 4px;
-  }
-  .checkbox-list-wrap.no-overflow::after{display:none;}
   .checkbox-list{
-    display:flex;flex-direction:column;gap:8px;max-height:170px;
-    overflow-y:auto;
-    padding-right:6px;
+    display:flex;flex-direction:column;gap:8px;
   }
   .checkbox-list label{
     font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink);
   }
   .checkbox-list input{accent-color:var(--accent);}
+  .show-more-btn{
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--accent-ink);
+    background:none;border:none;cursor:pointer;padding:8px 0 0;text-decoration:underline;
+  }
   .reset-btn{
     width:100%;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:10px;
     border-radius:5px;border:1px solid var(--line);background:var(--bg);color:var(--ink);
@@ -672,14 +664,19 @@
     return Array.from(set).sort();
   }
 
+  const CHECKBOX_LIST_LIMIT = 6;
+
   function buildCheckboxGroup(containerId, values, filterKey){
     const container = document.getElementById(containerId);
-    container.innerHTML = values.map(v => `
-      <label>
+    const wrap = container.closest('.checkbox-list-wrap');
+
+    container.innerHTML = values.map((v, i) => `
+      <label class="${i >= CHECKBOX_LIST_LIMIT ? 'extra-item' : ''}" style="${i >= CHECKBOX_LIST_LIMIT ? 'display:none;' : ''}">
         <input type="checkbox" value="${v}" data-filter="${filterKey}">
         ${v}
       </label>
     `).join("");
+
     container.querySelectorAll('input').forEach(input => {
       input.addEventListener('change', (e)=>{
         const key = e.target.dataset.filter;
@@ -689,6 +686,23 @@
         render();
       });
     });
+
+    const oldBtn = wrap.querySelector('.show-more-btn');
+    if(oldBtn) oldBtn.remove();
+
+    if(values.length > CHECKBOX_LIST_LIMIT){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'show-more-btn';
+      btn.textContent = 'Afficher plus';
+      btn.addEventListener('click', ()=>{
+        const extras = container.querySelectorAll('.extra-item');
+        const isHidden = extras[0].style.display === 'none';
+        extras.forEach(el => el.style.display = isHidden ? 'flex' : 'none');
+        btn.textContent = isHidden ? 'Afficher moins' : 'Afficher plus';
+      });
+      wrap.appendChild(btn);
+    }
   }
 
   function setupPriceSlider(){
@@ -771,22 +785,6 @@
     selMax.addEventListener('change', render);
   }
 
-  function updateScrollHints(){
-    document.querySelectorAll('.checkbox-list-wrap').forEach(wrap => {
-      const list = wrap.querySelector('.checkbox-list');
-      const refresh = ()=>{
-        const remaining = list.scrollHeight - list.scrollTop - list.clientHeight;
-        if(remaining > 2) wrap.classList.remove('no-overflow');
-        else wrap.classList.add('no-overflow');
-      };
-      refresh();
-      if(!list.dataset.scrollBound){
-        list.addEventListener('scroll', refresh);
-        list.dataset.scrollBound = "1";
-      }
-    });
-  }
-
   function buildFilters(){
     buildCheckboxGroup('filterMarque', uniqueValues('Marque'), 'marque');
     buildCheckboxGroup('filterCarburant', uniqueValues('Carburant'), 'carburant');
@@ -801,7 +799,6 @@
     setupKmBrackets();
     setupYearSelects();
     document.getElementById('resetFilters').addEventListener('click', resetFilters);
-    updateScrollHints();
   }
 
   function resetFilters(){
