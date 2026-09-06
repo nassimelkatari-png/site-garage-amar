@@ -73,12 +73,22 @@
     display:block;font-family:'Inter',sans-serif;font-size:12px;font-weight:400;
     text-transform:none;color:var(--ink-soft);letter-spacing:0;margin-top:2px;
   }
-  nav.top{display:flex;align-items:center;gap:22px;}
+  nav.top{display:flex;align-items:center;gap:16px;}
   nav.top a{
     font-size:14px;color:var(--ink);text-decoration:none;
     border-bottom:2px solid transparent;padding-bottom:2px;
   }
   nav.top a:hover{border-bottom-color:var(--accent);}
+
+  .lang-switch{display:flex;gap:5px;}
+  .lang-btn{
+    width:32px;height:32px;border-radius:50%;
+    border:1px solid var(--line);background:var(--card);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    font-size:15px;line-height:1;opacity:.5;padding:0;
+  }
+  .lang-btn.active{opacity:1;border-color:var(--accent);}
+  .lang-btn:hover{opacity:1;}
 
   .theme-toggle{
     width:38px;height:38px;border-radius:50%;
@@ -279,7 +289,7 @@
   .fav-btn svg{width:16px;height:16px;stroke:var(--ink-soft);fill:none;stroke-width:1.8;}
   .fav-btn.active svg{fill:var(--accent);stroke:var(--accent);}
 
-  /* --- Pastilles specs : rectangles, pas des bulles --- */
+  /* --- Pastilles specs : rectangles \u00e0 angles droits --- */
   .spec-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;}
   .chip{
     font-family:'Quicksand',sans-serif;
@@ -392,26 +402,31 @@
 
 <header class="top">
   <div class="brand site-name">GARAGE DEMO
-    <small>Modèle de site — remplacer nom, logo et coordonnées</small>
+    <small data-i18n="brand_small">Modèle de site — remplacer nom, logo et coordonnées</small>
   </div>
   <nav class="top">
-    <a href="#">Catalogue</a>
-    <a href="#">Contact</a>
+    <a href="#" data-i18n="nav_catalog">Catalogue</a>
+    <a href="#" data-i18n="nav_contact">Contact</a>
+    <div class="lang-switch" id="langSwitch">
+      <button class="lang-btn" data-lang="fr" title="Français">🇫🇷</button>
+      <button class="lang-btn" data-lang="nl" title="Nederlands">🇧🇪</button>
+      <button class="lang-btn" data-lang="en" title="English">🇬🇧</button>
+    </div>
     <button class="theme-toggle" id="themeToggle" title="Changer de thème">🌙</button>
   </nav>
 </header>
 
 <section class="hero">
-  <h1 class="site-name">Le stock, vu clair.</h1>
-  <p>Chaque véhicule de notre sélection, ses documents et sa disponibilité — mis à jour en direct. Cliquez sur une fiche pour tous les détails et prendre rendez-vous.</p>
+  <h1 class="site-name" data-i18n="hero_title">Le stock, vu clair.</h1>
+  <p data-i18n="hero_text">Chaque véhicule de notre sélection, ses documents et sa disponibilité — mis à jour en direct. Cliquez sur une fiche pour tous les détails et prendre rendez-vous.</p>
 </section>
 
 <div class="layout">
   <aside class="filters" id="filters">
-    <h3>Filtrer</h3>
+    <h3 data-i18n="filters_title">Filtrer</h3>
 
     <div class="filter-group">
-      <div class="fg-title">Prix</div>
+      <div class="fg-title" data-i18n="filter_price">Prix</div>
       <div class="price-slider">
         <div class="track"></div>
         <div class="fill" id="priceFill"></div>
@@ -425,55 +440,55 @@
     </div>
 
     <div class="filter-group">
-      <div class="fg-title">Année</div>
+      <div class="fg-title" data-i18n="filter_year">Année</div>
       <div class="year-row">
-        <select id="yearMinSelect"><option value="">De</option></select>
+        <select id="yearMinSelect"><option value="" data-i18n="year_from">De</option></select>
         <span>—</span>
-        <select id="yearMaxSelect"><option value="">À</option></select>
+        <select id="yearMaxSelect"><option value="" data-i18n="year_to">À</option></select>
       </div>
     </div>
 
     <div class="filter-group">
-      <div class="fg-title">Kilométrage</div>
+      <div class="fg-title" data-i18n="filter_km">Kilométrage</div>
       <div class="checkbox-list-wrap"><div class="checkbox-list" id="kmBrackets"></div></div>
     </div>
 
     <div class="filter-group">
-      <div class="fg-title">Marque</div>
+      <div class="fg-title" data-i18n="filter_brand">Marque</div>
       <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterMarque"></div></div>
     </div>
 
     <div class="filter-group">
-      <div class="fg-title">Carburant</div>
+      <div class="fg-title" data-i18n="filter_fuel">Carburant</div>
       <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterCarburant"></div></div>
     </div>
 
     <div class="filter-group">
-      <div class="fg-title">Transmission</div>
+      <div class="fg-title" data-i18n="filter_gearbox">Transmission</div>
       <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterTransmission"></div></div>
     </div>
 
     <div class="filter-group">
-      <div class="fg-title">Couleur</div>
+      <div class="fg-title" data-i18n="filter_color">Couleur</div>
       <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterCouleur"></div></div>
     </div>
 
     <div class="filter-group" id="optionsGroup" style="display:none;">
-      <div class="fg-title">Options</div>
+      <div class="fg-title" data-i18n="filter_options">Options</div>
       <div class="checkbox-list-wrap"><div class="checkbox-list" id="filterOptions"></div></div>
     </div>
 
-    <button class="reset-btn" id="resetFilters">Réinitialiser les filtres</button>
+    <button class="reset-btn" id="resetFilters" data-i18n="reset_filters">Réinitialiser les filtres</button>
   </aside>
 
   <main>
     <div class="toolbar">
-      <span class="count" id="count">Chargement…</span>
+      <span class="count" id="count">…</span>
       <select id="sort">
-        <option value="recent">Plus récents</option>
-        <option value="price-asc">Prix croissant</option>
-        <option value="price-desc">Prix décroissant</option>
-        <option value="km-asc">Kilométrage croissant</option>
+        <option value="recent" data-i18n="sort_recent">Plus récents</option>
+        <option value="price-asc" data-i18n="sort_price_asc">Prix croissant</option>
+        <option value="price-desc" data-i18n="sort_price_desc">Prix décroissant</option>
+        <option value="km-asc" data-i18n="sort_km_asc">Kilométrage croissant</option>
       </select>
     </div>
     <div id="grid" class="grid"></div>
@@ -482,15 +497,15 @@
 </div>
 
 <section class="map-section">
-  <h2 class="site-name">Nous trouver</h2>
+  <h2 class="site-name" data-i18n="find_us">Nous trouver</h2>
   <div class="find-grid">
     <div class="find-photo-card">
-      <div class="photo placeholder">Photo du garage à venir</div>
+      <div class="photo placeholder" data-i18n="find_photo_placeholder">Photo du garage à venir</div>
       <div class="find-body">
-        <p>Un accueil sans détour : venez voir le véhicule qui vous intéresse, poser vos questions, discuter du financement. Parking sur place.</p>
+        <p data-i18n="find_intro">Un accueil sans détour : venez voir le véhicule qui vous intéresse, poser vos questions, discuter du financement. Parking sur place.</p>
         <div class="find-info">
-          <div><span class="label">Adresse</span>Mechelsesteenweg 187, 3020 Herent</div>
-          <div><span class="label">Horaires</span>Sur rendez-vous</div>
+          <div><span class="label" data-i18n="find_address_label">Adresse</span>Mechelsesteenweg 187, 3020 Herent</div>
+          <div><span class="label" data-i18n="find_hours_label">Horaires</span><span data-i18n="find_hours_value">Sur rendez-vous</span></div>
         </div>
       </div>
     </div>
@@ -498,26 +513,26 @@
   </div>
 </section>
 
-<footer>
+<footer data-i18n="footer_text">
   Ce site lit automatiquement le tableau du stock — ajoutez une voiture dans le Google Sheet, elle apparaît ici sans autre manipulation.
 </footer>
 
 <!-- Bouton flottant favoris -->
 <button class="fav-float-btn" id="favFloatBtn" title="Voir mes favoris">
   <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.33-8.2C1.02 10.28 1.6 6.9 4.6 5.4c2.2-1.1 4.6-.3 5.9 1.4l1.5 2 1.5-2c1.3-1.7 3.7-2.5 5.9-1.4 3 1.5 3.58 4.88 1.93 7.4C18.7 16.65 12 21 12 21z"/></svg>
-  Favoris
+  <span data-i18n="fav_button">Favoris</span>
   <span class="fav-float-count" id="favFloatCount">0</span>
 </button>
 
 <!-- Page favoris (overlay plein écran) -->
 <div class="fav-overlay" id="favOverlay">
   <div class="fav-page-header">
-    <button class="fav-back-btn" id="favBackBtn">&#8592; Retour au catalogue</button>
-    <h2 class="site-name">Vos favoris</h2>
+    <button class="fav-back-btn" id="favBackBtn">&#8592; <span data-i18n="fav_back">Retour au catalogue</span></button>
+    <h2 class="site-name" data-i18n="fav_page_title">Vos favoris</h2>
   </div>
   <div class="fav-page-body">
     <div class="grid" id="favGrid"></div>
-    <div class="fav-empty-state" id="favEmptyState" style="display:none;">
+    <div class="fav-empty-state" id="favEmptyState" style="display:none;" data-i18n="fav_empty">
       Aucun favori pour l'instant. Cliquez sur le cœur d'un véhicule pour le retrouver ici.
     </div>
   </div>
@@ -530,14 +545,185 @@
 <script>
   const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRfqBL9hEhOQUxk4h8K2zpL6Bqpj1hbHKCjTO7axnjy91LOBQWbc-3ZweiAc2Y7fy_PEsmf3UVX8Ezy/pub?gid=841689429&single=true&output=csv";
 
-  // Nombre de jours qu'une annonce "Vendu" reste encore visible après sa date de vente.
   const SOLD_GRACE_DAYS = 3;
 
   let cars = [];
   let activeFilters = { marque:new Set(), carburant:new Set(), transmission:new Set(), couleur:new Set(), options:new Set() };
   let priceBounds = {min:0, max:100000};
   let priceSelected = {min:0, max:100000};
-  let kmBracketSelected = null; // {min, max}
+  let kmBracketSelected = null;
+
+  // ================== TRADUCTIONS ==================
+  const TRANSLATIONS = {
+    fr: {
+      brand_small: "Modèle de site — remplacer nom, logo et coordonnées",
+      nav_catalog: "Catalogue", nav_contact: "Contact",
+      hero_title: "Le stock, vu clair.",
+      hero_text: "Chaque véhicule de notre sélection, ses documents et sa disponibilité — mis à jour en direct. Cliquez sur une fiche pour tous les détails et prendre rendez-vous.",
+      filters_title: "Filtrer", filter_price: "Prix", filter_year: "Année",
+      year_from: "De", year_to: "À", filter_km: "Kilométrage",
+      km_10000: "Jusqu'à 10 000 km", km_25000: "Jusqu'à 25 000 km", km_50000: "Jusqu'à 50 000 km",
+      km_100000: "Jusqu'à 100 000 km", km_more: "Plus de 100 000 km",
+      filter_brand: "Marque", filter_fuel: "Carburant", filter_gearbox: "Transmission",
+      filter_color: "Couleur", filter_options: "Options",
+      reset_filters: "Réinitialiser les filtres", show_more: "Afficher plus", show_less: "Afficher moins",
+      sort_recent: "Plus récents", sort_price_asc: "Prix croissant", sort_price_desc: "Prix décroissant",
+      sort_km_asc: "Kilométrage croissant",
+      loading: "Chargement du catalogue…",
+      no_results: "Aucun véhicule ne correspond à ces critères.",
+      no_data: "Aucune donnée trouvée — vérifie que le Sheet est bien publié sur le web.",
+      load_error: "Impossible de charger le catalogue. Vérifie le lien de publication du Google Sheet.",
+      vehicle_singular: "véhicule", vehicle_plural: "véhicules",
+      add_fav: "Ajouter aux favoris",
+      status_available: "Disponible", status_reserved: "Réservé", status_sold: "Vendu",
+      warranty_suffix: "de garantie", seats_suffix: "places",
+      detail_year: "Année", detail_km: "Kilométrage", detail_fuel: "Carburant",
+      detail_gearbox: "Boîte", detail_seats: "Nombre de places", detail_color: "Couleur",
+      detail_warranty: "Garantie", detail_last_inspection: "Dernier contrôle technique",
+      detail_inspection_result: "Résultat",
+      book_visit: "Prendre rendez-vous", view_full_sheet: "Voir la fiche complète",
+      find_us: "Nous trouver", find_photo_placeholder: "Photo du garage à venir",
+      find_intro: "Un accueil sans détour : venez voir le véhicule qui vous intéresse, poser vos questions, discuter du financement. Parking sur place.",
+      find_address_label: "Adresse", find_hours_label: "Horaires", find_hours_value: "Sur rendez-vous",
+      footer_text: "Ce site lit automatiquement le tableau du stock — ajoutez une voiture dans le Google Sheet, elle apparaît ici sans autre manipulation.",
+      fav_button: "Favoris", fav_page_title: "Vos favoris", fav_back: "Retour au catalogue",
+      fav_empty: "Aucun favori pour l'instant. Cliquez sur le cœur d'un véhicule pour le retrouver ici.",
+      map_address_unavailable: "Adresse introuvable sur la carte.", map_load_error: "Impossible de charger la carte."
+    },
+    nl: {
+      brand_small: "Sitevoorbeeld — naam, logo en gegevens vervangen",
+      nav_catalog: "Catalogus", nav_contact: "Contact",
+      hero_title: "De voorraad, helder in beeld.",
+      hero_text: "Elk voertuig uit onze selectie, met documenten en beschikbaarheid — live bijgewerkt. Klik op een advertentie voor alle details en om een afspraak te maken.",
+      filters_title: "Filteren", filter_price: "Prijs", filter_year: "Bouwjaar",
+      year_from: "Van", year_to: "Tot", filter_km: "Kilometerstand",
+      km_10000: "Tot 10.000 km", km_25000: "Tot 25.000 km", km_50000: "Tot 50.000 km",
+      km_100000: "Tot 100.000 km", km_more: "Meer dan 100.000 km",
+      filter_brand: "Merk", filter_fuel: "Brandstof", filter_gearbox: "Transmissie",
+      filter_color: "Kleur", filter_options: "Opties",
+      reset_filters: "Filters resetten", show_more: "Meer weergeven", show_less: "Minder weergeven",
+      sort_recent: "Meest recent", sort_price_asc: "Prijs oplopend", sort_price_desc: "Prijs aflopend",
+      sort_km_asc: "Kilometerstand oplopend",
+      loading: "Catalogus laden…",
+      no_results: "Geen enkel voertuig komt overeen met deze criteria.",
+      no_data: "Geen gegevens gevonden — controleer of de Sheet correct gepubliceerd is op het web.",
+      load_error: "Kan de catalogus niet laden. Controleer de publicatielink van de Google Sheet.",
+      vehicle_singular: "voertuig", vehicle_plural: "voertuigen",
+      add_fav: "Toevoegen aan favorieten",
+      status_available: "Beschikbaar", status_reserved: "Gereserveerd", status_sold: "Verkocht",
+      warranty_suffix: "garantie", seats_suffix: "zitplaatsen",
+      detail_year: "Bouwjaar", detail_km: "Kilometerstand", detail_fuel: "Brandstof",
+      detail_gearbox: "Versnellingsbak", detail_seats: "Aantal zitplaatsen", detail_color: "Kleur",
+      detail_warranty: "Garantie", detail_last_inspection: "Laatste keuring",
+      detail_inspection_result: "Resultaat",
+      book_visit: "Afspraak maken", view_full_sheet: "Volledige fiche bekijken",
+      find_us: "Ons vinden", find_photo_placeholder: "Foto van de garage volgt binnenkort",
+      find_intro: "Een rechtstreekse aanpak: kom het voertuig bekijken dat u interesseert, stel uw vragen, bespreek de financiering. Parking ter plaatse.",
+      find_address_label: "Adres", find_hours_label: "Openingsuren", find_hours_value: "Op afspraak",
+      footer_text: "Deze site leest automatisch de voorraadtabel — voeg een auto toe in de Google Sheet en ze verschijnt hier zonder verdere actie.",
+      fav_button: "Favorieten", fav_page_title: "Uw favorieten", fav_back: "Terug naar catalogus",
+      fav_empty: "Nog geen favorieten. Klik op het hartje van een voertuig om het hier terug te vinden.",
+      map_address_unavailable: "Adres niet gevonden op de kaart.", map_load_error: "Kan de kaart niet laden."
+    },
+    en: {
+      brand_small: "Site template — replace name, logo and contact details",
+      nav_catalog: "Catalog", nav_contact: "Contact",
+      hero_title: "The stock, made clear.",
+      hero_text: "Every vehicle in our selection, with its documents and availability — updated live. Click on a listing for full details and to book a visit.",
+      filters_title: "Filter", filter_price: "Price", filter_year: "Year",
+      year_from: "From", year_to: "To", filter_km: "Mileage",
+      km_10000: "Up to 10,000 km", km_25000: "Up to 25,000 km", km_50000: "Up to 50,000 km",
+      km_100000: "Up to 100,000 km", km_more: "Over 100,000 km",
+      filter_brand: "Brand", filter_fuel: "Fuel", filter_gearbox: "Transmission",
+      filter_color: "Color", filter_options: "Options",
+      reset_filters: "Reset filters", show_more: "Show more", show_less: "Show less",
+      sort_recent: "Most recent", sort_price_asc: "Price: low to high", sort_price_desc: "Price: high to low",
+      sort_km_asc: "Mileage: low to high",
+      loading: "Loading catalog…",
+      no_results: "No vehicle matches these criteria.",
+      no_data: "No data found — check that the Sheet is properly published to the web.",
+      load_error: "Couldn't load the catalog. Check the Google Sheet's publish link.",
+      vehicle_singular: "vehicle", vehicle_plural: "vehicles",
+      add_fav: "Add to favorites",
+      status_available: "Available", status_reserved: "Reserved", status_sold: "Sold",
+      warranty_suffix: "warranty", seats_suffix: "seats",
+      detail_year: "Year", detail_km: "Mileage", detail_fuel: "Fuel",
+      detail_gearbox: "Gearbox", detail_seats: "Number of seats", detail_color: "Color",
+      detail_warranty: "Warranty", detail_last_inspection: "Last technical inspection",
+      detail_inspection_result: "Result",
+      book_visit: "Book a visit", view_full_sheet: "View full listing",
+      find_us: "Find us", find_photo_placeholder: "Garage photo coming soon",
+      find_intro: "A straightforward welcome: come see the vehicle you're interested in, ask your questions, discuss financing. Parking on site.",
+      find_address_label: "Address", find_hours_label: "Hours", find_hours_value: "By appointment",
+      footer_text: "This site automatically reads the stock spreadsheet — add a car to the Google Sheet and it appears here with no extra step.",
+      fav_button: "Favorites", fav_page_title: "Your favorites", fav_back: "Back to catalog",
+      fav_empty: "No favorites yet. Click the heart on a vehicle to find it here.",
+      map_address_unavailable: "Address not found on the map.", map_load_error: "Couldn't load the map."
+    }
+  };
+
+  // Traductions des valeurs de listes fermées (le Sheet reste toujours en français, seul l'affichage change).
+  const FUEL_LABELS = {
+    "Essence": {fr:"Essence", nl:"Benzine", en:"Petrol"},
+    "Diesel": {fr:"Diesel", nl:"Diesel", en:"Diesel"},
+    "Hybride": {fr:"Hybride", nl:"Hybride", en:"Hybrid"},
+    "Hybride rechargeable": {fr:"Hybride rechargeable", nl:"Plug-in hybride", en:"Plug-in hybrid"},
+    "Électrique": {fr:"Électrique", nl:"Elektrisch", en:"Electric"},
+    "CNG": {fr:"CNG", nl:"CNG", en:"CNG"},
+    "LPG": {fr:"LPG", nl:"LPG", en:"LPG"}
+  };
+  const GEARBOX_LABELS = {
+    "Manuelle": {fr:"Manuelle", nl:"Manueel", en:"Manual"},
+    "Automatique": {fr:"Automatique", nl:"Automaat", en:"Automatic"}
+  };
+  const COLOR_LABELS = {
+    "Blanc":{fr:"Blanc",nl:"Wit",en:"White"}, "Noir":{fr:"Noir",nl:"Zwart",en:"Black"},
+    "Gris":{fr:"Gris",nl:"Grijs",en:"Grey"}, "Gris foncé":{fr:"Gris foncé",nl:"Donkergrijs",en:"Dark grey"},
+    "Argent":{fr:"Argent",nl:"Zilver",en:"Silver"}, "Bleu":{fr:"Bleu",nl:"Blauw",en:"Blue"},
+    "Rouge":{fr:"Rouge",nl:"Rood",en:"Red"}, "Vert":{fr:"Vert",nl:"Groen",en:"Green"},
+    "Jaune":{fr:"Jaune",nl:"Geel",en:"Yellow"}, "Orange":{fr:"Orange",nl:"Oranje",en:"Orange"},
+    "Marron":{fr:"Marron",nl:"Bruin",en:"Brown"}, "Beige":{fr:"Beige",nl:"Beige",en:"Beige"}
+  };
+
+  let currentLang = localStorage.getItem('garage_lang') || 'fr';
+
+  function t(key){
+    return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS.fr[key] || key;
+  }
+  function tv(map, raw){
+    const entry = map[raw];
+    return entry ? (entry[currentLang] || entry.fr) : raw;
+  }
+
+  function applyStaticTranslations(){
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      el.textContent = t(key);
+    });
+    document.title = currentLang === 'nl' ? 'Voertuigcatalogus' : (currentLang === 'en' ? 'Vehicle catalog' : 'Catalogue véhicules');
+  }
+
+  function updateLangButtons(){
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === currentLang);
+    });
+  }
+
+  function setLang(lang){
+    currentLang = lang;
+    localStorage.setItem('garage_lang', lang);
+    applyStaticTranslations();
+    updateLangButtons();
+    if(cars.length > 0){
+      buildFilters();
+      render();
+      if(document.getElementById('favOverlay').classList.contains('open')) renderFavoritesPage();
+    }
+  }
+
+  document.getElementById('langSwitch').querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+  });
 
   // --- Favoris ---
   const FAV_KEY = 'garage_favorites_v1';
@@ -632,10 +818,9 @@
   }
   function num(v){ return parseFloat(String(v).replace(/[^\d.]/g,"")) || 0; }
 
-  // Renvoie true si une voiture "Vendu" est encore dans son délai de grâce d'affichage.
   function isWithinSoldGrace(c){
     const saleDateStr = (c["Date de vente"]||"").trim();
-    if(!saleDateStr) return false; // pas de date renseignée -> on masque tout de suite par sécurité
+    if(!saleDateStr) return false;
     const saleDate = new Date(saleDateStr);
     if(isNaN(saleDate.getTime())) return false;
     const diffDays = (Date.now() - saleDate.getTime()) / (1000*60*60*24);
@@ -666,14 +851,14 @@
 
   const CHECKBOX_LIST_LIMIT = 6;
 
-  function buildCheckboxGroup(containerId, values, filterKey){
+  function buildCheckboxGroup(containerId, values, filterKey, labelMap){
     const container = document.getElementById(containerId);
     const wrap = container.closest('.checkbox-list-wrap');
 
     container.innerHTML = values.map((v, i) => `
       <label class="${i >= CHECKBOX_LIST_LIMIT ? 'extra-item' : ''}" style="${i >= CHECKBOX_LIST_LIMIT ? 'display:none;' : ''}">
-        <input type="checkbox" value="${v}" data-filter="${filterKey}">
-        ${v}
+        <input type="checkbox" value="${v}" data-filter="${filterKey}" ${activeFilters[filterKey] && activeFilters[filterKey].has(v) ? 'checked' : ''}>
+        ${labelMap ? tv(labelMap, v) : v}
       </label>
     `).join("");
 
@@ -694,12 +879,12 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'show-more-btn';
-      btn.textContent = 'Afficher plus';
+      btn.textContent = t('show_more');
       btn.addEventListener('click', ()=>{
         const extras = container.querySelectorAll('.extra-item');
         const isHidden = extras[0].style.display === 'none';
         extras.forEach(el => el.style.display = isHidden ? 'flex' : 'none');
-        btn.textContent = isHidden ? 'Afficher moins' : 'Afficher plus';
+        btn.textContent = isHidden ? t('show_less') : t('show_more');
       });
       wrap.appendChild(btn);
     }
@@ -747,17 +932,17 @@
 
   function setupKmBrackets(){
     const brackets = [
-      {label:"Jusqu'à 10 000 km", min:0, max:10000},
-      {label:"Jusqu'à 25 000 km", min:0, max:25000},
-      {label:"Jusqu'à 50 000 km", min:0, max:50000},
-      {label:"Jusqu'à 100 000 km", min:0, max:100000},
-      {label:"Plus de 100 000 km", min:100000, max:Infinity},
+      {key:"km_10000", min:0, max:10000},
+      {key:"km_25000", min:0, max:25000},
+      {key:"km_50000", min:0, max:50000},
+      {key:"km_100000", min:0, max:100000},
+      {key:"km_more", min:100000, max:Infinity},
     ];
     const container = document.getElementById('kmBrackets');
     container.innerHTML = brackets.map((b,i) => `
       <label>
-        <input type="radio" name="kmBracket" data-min="${b.min}" data-max="${b.max === Infinity ? '' : b.max}">
-        ${b.label}
+        <input type="radio" name="kmBracket" data-min="${b.min}" data-max="${b.max === Infinity ? '' : b.max}" ${kmBracketSelected && kmBracketSelected.min === b.min && (kmBracketSelected.max === b.max) ? 'checked' : ''}>
+        ${t(b.key)}
       </label>
     `).join("");
     container.querySelectorAll('input').forEach(input => {
@@ -777,23 +962,27 @@
     const maxY = years.length ? years[years.length-1] : new Date().getFullYear();
     const selMin = document.getElementById('yearMinSelect');
     const selMax = document.getElementById('yearMaxSelect');
+    const prevMin = selMin.value, prevMax = selMax.value;
+    selMin.innerHTML = `<option value="">${t('year_from')}</option>`;
+    selMax.innerHTML = `<option value="">${t('year_to')}</option>`;
     for(let y = minY; y <= maxY; y++){
       selMin.innerHTML += `<option value="${y}">${y}</option>`;
       selMax.innerHTML += `<option value="${y}">${y}</option>`;
     }
+    selMin.value = prevMin; selMax.value = prevMax;
     selMin.addEventListener('change', render);
     selMax.addEventListener('change', render);
   }
 
   function buildFilters(){
-    buildCheckboxGroup('filterMarque', uniqueValues('Marque'), 'marque');
-    buildCheckboxGroup('filterCarburant', uniqueValues('Carburant'), 'carburant');
-    buildCheckboxGroup('filterTransmission', uniqueValues('Boîte de vitesse'), 'transmission');
-    buildCheckboxGroup('filterCouleur', uniqueValues('Couleur'), 'couleur');
+    buildCheckboxGroup('filterMarque', uniqueValues('Marque'), 'marque', null);
+    buildCheckboxGroup('filterCarburant', uniqueValues('Carburant'), 'carburant', FUEL_LABELS);
+    buildCheckboxGroup('filterTransmission', uniqueValues('Boîte de vitesse'), 'transmission', GEARBOX_LABELS);
+    buildCheckboxGroup('filterCouleur', uniqueValues('Couleur'), 'couleur', COLOR_LABELS);
     const opts = uniqueOptions();
     if(opts.length > 0){
       document.getElementById('optionsGroup').style.display = 'block';
-      buildCheckboxGroup('filterOptions', opts, 'options');
+      buildCheckboxGroup('filterOptions', opts, 'options', null);
     }
     setupPriceSlider();
     setupKmBrackets();
@@ -822,7 +1011,6 @@
 
     return cars.filter(c => {
       const statut = (c["Statut"]||"").trim().toLowerCase();
-      // "Vendu" reste visible SOLD_GRACE_DAYS jours après la "Date de vente", puis disparaît.
       if(statut === "vendu" && !isWithinSoldGrace(c)) return false;
 
       const price = num(c["Prix (€)"]);
@@ -849,19 +1037,18 @@
     });
   }
 
-  // --- Construction du HTML d'une carte (réutilisé catalogue + page favoris) ---
   function buildCardHtml(c){
     const imgs = driveImageUrls(c["Lien photos"]);
-    const statut = (c["Statut"]||"").trim();
-    const statutLower = statut.toLowerCase();
+    const statutLower = (c["Statut"]||"").trim().toLowerCase();
     let badgeClass = "ok";
-    if(statutLower === "réservé") badgeClass = "hold";
-    else if(statutLower === "vendu") badgeClass = "sold";
+    let badgeText = t('status_available');
+    if(statutLower === "réservé"){ badgeClass = "hold"; badgeText = t('status_reserved'); }
+    else if(statutLower === "vendu"){ badgeClass = "sold"; badgeText = t('status_sold'); }
     const favActive = isFavorite(c["ID"]) ? ' active' : '';
 
     let thumbHtml;
     if(imgs.length === 0){
-      thumbHtml = `<div class="thumb placeholder">Photo à venir</div>`;
+      thumbHtml = `<div class="thumb placeholder">${t('find_photo_placeholder')}</div>`;
     } else if(imgs.length === 1){
       thumbHtml = `<img class="thumb" src="${imgs[0]}" alt="${c['Marque']} ${c['Modèle']}">`;
     } else {
@@ -881,11 +1068,11 @@
     const chipValues = [];
     if(c["Année"]) chipValues.push(c["Année"]);
     if(c["Kilométrage (km)"]) chipValues.push(fmtKm(c["Kilométrage (km)"]));
-    if(c["Boîte de vitesse"]) chipValues.push(c["Boîte de vitesse"]);
-    if(c["Carburant"]) chipValues.push(c["Carburant"]);
-    if(c["Nombre de places"]) chipValues.push(c["Nombre de places"] + " places");
+    if(c["Boîte de vitesse"]) chipValues.push(tv(GEARBOX_LABELS, c["Boîte de vitesse"]));
+    if(c["Carburant"]) chipValues.push(tv(FUEL_LABELS, c["Carburant"]));
+    if(c["Nombre de places"]) chipValues.push(c["Nombre de places"] + " " + t('seats_suffix'));
     let chipsHtml = chipValues.map(v => `<span class="chip">${v}</span>`).join("");
-    if(c["Garantie"]) chipsHtml += `<span class="chip chip-good">${c["Garantie"]} de garantie</span>`;
+    if(c["Garantie"]) chipsHtml += `<span class="chip chip-good">${c["Garantie"]} ${t('warranty_suffix')}</span>`;
 
     return `
       <div class="card" data-id="${c["ID"]}">
@@ -893,10 +1080,10 @@
           ${thumbHtml}
         </div>
         <div class="body">
-          <span class="badge ${badgeClass}">${statut}</span>
+          <span class="badge ${badgeClass}">${badgeText}</span>
           <div class="title-row">
             <h3>${c["Marque"]||""} ${c["Modèle"]||""}</h3>
-            <button class="fav-btn${favActive}" data-fav-id="${c["ID"]}" title="Ajouter aux favoris" onclick="event.stopPropagation(); toggleFavorite('${c["ID"]}')">
+            <button class="fav-btn${favActive}" data-fav-id="${c["ID"]}" title="${t('add_fav')}" onclick="event.stopPropagation(); toggleFavorite('${c["ID"]}')">
               <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.33-8.2C1.02 10.28 1.6 6.9 4.6 5.4c2.2-1.1 4.6-.3 5.9 1.4l1.5 2 1.5-2c1.3-1.7 3.7-2.5 5.9-1.4 3 1.5 3.58 4.88 1.93 7.4C18.7 16.65 12 21 12 21z"/></svg>
             </button>
           </div>
@@ -906,7 +1093,6 @@
       </div>`;
   }
 
-  // Construit le HTML d'une grille de cartes avec une ligne fine toutes les 3 (colle avec grid-template-columns:3).
   function buildGridHtml(list){
     let html = "";
     list.forEach((c, i) => {
@@ -962,12 +1148,12 @@
     if(visible.length === 0){
       grid.innerHTML = "";
       state.style.display = "block";
-      state.textContent = "Aucun véhicule ne correspond à ces critères.";
+      state.textContent = t('no_results');
       count.textContent = "";
       return;
     }
     state.style.display = "none";
-    count.textContent = visible.length + " véhicule" + (visible.length > 1 ? "s" : "");
+    count.textContent = visible.length + " " + (visible.length > 1 ? t('vehicle_plural') : t('vehicle_singular'));
 
     grid.innerHTML = buildGridHtml(visible);
     bindCardEvents(grid);
@@ -1006,15 +1192,15 @@
         </div>
         <span class="price">${fmtPrice(c["Prix (€)"])}</span>
         <div class="spec-grid">
-          <div class="spec"><div class="label">Année</div><div class="value">${c["Année"]||"—"}</div></div>
-          <div class="spec"><div class="label">Kilométrage</div><div class="value">${fmtKm(c["Kilométrage (km)"])}</div></div>
-          <div class="spec"><div class="label">Carburant</div><div class="value">${c["Carburant"]||"—"}</div></div>
-          <div class="spec"><div class="label">Boîte</div><div class="value">${c["Boîte de vitesse"]||"—"}</div></div>
-          <div class="spec"><div class="label">Nombre de places</div><div class="value">${c["Nombre de places"]||"—"}</div></div>
-          <div class="spec"><div class="label">Couleur</div><div class="value">${c["Couleur"]||"—"}</div></div>
-          <div class="spec"><div class="label">Garantie</div><div class="value">${c["Garantie"]||"—"}</div></div>
-          <div class="spec"><div class="label">Dernier contrôle technique</div><div class="value">${c["Date dernier contrôle technique"]||"—"}</div></div>
-          <div class="spec"><div class="label">Résultat</div><div class="value">${c["Résultat contrôle technique"]||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_year')}</div><div class="value">${c["Année"]||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_km')}</div><div class="value">${fmtKm(c["Kilométrage (km)"])}</div></div>
+          <div class="spec"><div class="label">${t('detail_fuel')}</div><div class="value">${tv(FUEL_LABELS, c["Carburant"])||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_gearbox')}</div><div class="value">${tv(GEARBOX_LABELS, c["Boîte de vitesse"])||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_seats')}</div><div class="value">${c["Nombre de places"]||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_color')}</div><div class="value">${tv(COLOR_LABELS, c["Couleur"])||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_warranty')}</div><div class="value">${c["Garantie"]||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_last_inspection')}</div><div class="value">${c["Date dernier contrôle technique"]||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_inspection_result')}</div><div class="value">${c["Résultat contrôle technique"]||"—"}</div></div>
         </div>
         ${c["Infos supplémentaires"] ? `<p class="notes">${c["Infos supplémentaires"]}</p>` : ""}
         <div class="actions">
@@ -1023,9 +1209,9 @@
             data-cal-link="team/nared-studio/visite-vehicules"
             data-cal-config='{"layout":"month_view","notes":"Visite pour : ${(c["Marque"]||"")+" "+(c["Modèle"]||"")}"}'
             style="border:1px solid var(--accent); font-family:'Inter',sans-serif; cursor:pointer;">
-            Prendre rendez-vous
+            ${t('book_visit')}
           </button>
-          ${doc ? `<a class="btn ghost" href="${doc}" target="_blank" rel="noopener">Voir la fiche complète</a>` : ""}
+          ${doc ? `<a class="btn ghost" href="${doc}" target="_blank" rel="noopener">${t('view_full_sheet')}</a>` : ""}
         </div>
       </div>`;
 
@@ -1068,7 +1254,7 @@
   function loadData(){
     const state = document.getElementById('state');
     state.style.display = 'block';
-    state.textContent = 'Chargement du catalogue…';
+    state.textContent = t('loading');
     Papa.parse(CSV_URL, {
       download:true,
       header:true,
@@ -1077,7 +1263,7 @@
       complete: function(results){
         cars = results.data.filter(r => r["ID"] && r["ID"].trim() !== "");
         if(cars.length === 0){
-          state.textContent = "Aucune donnée trouvée — vérifie que le Sheet est bien publié sur le web.";
+          state.textContent = t('no_data');
           return;
         }
         buildFilters();
@@ -1085,12 +1271,14 @@
         updateFavFloatBtn();
       },
       error: function(err){
-        state.textContent = "Impossible de charger le catalogue. Vérifie le lien de publication du Google Sheet.";
+        state.textContent = t('load_error');
         console.error(err);
       }
     });
   }
 
+  applyStaticTranslations();
+  updateLangButtons();
   loadData();
 
   const GARAGE_ADDRESS = "Mechelsesteenweg 187, 3020 Herent, Belgique";
@@ -1122,11 +1310,11 @@
         if(results && results.length > 0){
           initMap(parseFloat(results[0].lat), parseFloat(results[0].lon));
         } else {
-          mapEl.innerHTML = "<div style='padding:20px;font-size:13px;color:var(--ink-soft);'>Adresse introuvable sur la carte.</div>";
+          mapEl.innerHTML = "<div style='padding:20px;font-size:13px;color:var(--ink-soft);'>" + t('map_address_unavailable') + "</div>";
         }
       })
       .catch(() => {
-        mapEl.innerHTML = "<div style='padding:20px;font-size:13px;color:var(--ink-soft);'>Impossible de charger la carte.</div>";
+        mapEl.innerHTML = "<div style='padding:20px;font-size:13px;color:var(--ink-soft);'>" + t('map_load_error') + "</div>";
       });
   }
 
