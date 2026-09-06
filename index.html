@@ -80,15 +80,28 @@
   }
   nav.top a:hover{border-bottom-color:var(--accent);}
 
-  .lang-switch{display:flex;gap:5px;}
-  .lang-btn{
-    width:32px;height:32px;border-radius:50%;
-    border:1px solid var(--line);background:var(--card);
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-    font-size:15px;line-height:1;opacity:.5;padding:0;
+  .lang-switch{position:relative;}
+  .lang-current-btn{
+    display:flex;align-items:center;gap:5px;
+    border:1px solid var(--line);background:var(--card);border-radius:20px;
+    padding:6px 10px;cursor:pointer;font-size:15px;line-height:1;
   }
-  .lang-btn.active{opacity:1;border-color:var(--accent);}
-  .lang-btn:hover{opacity:1;}
+  .lang-current-btn:hover{border-color:var(--accent);}
+  .lang-caret{width:12px;height:12px;stroke:var(--ink-soft);fill:none;stroke-width:2;transition:transform .15s ease;}
+  .lang-switch.open .lang-caret{transform:rotate(180deg);}
+  .lang-dropdown{
+    position:absolute;top:calc(100% + 6px);right:0;background:var(--card);
+    border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.15);
+    display:none;flex-direction:column;min-width:150px;overflow:hidden;z-index:80;
+  }
+  .lang-switch.open .lang-dropdown{display:flex;}
+  .lang-dropdown button{
+    display:flex;align-items:center;gap:8px;
+    padding:9px 12px;border:none;background:none;cursor:pointer;
+    font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);text-align:left;
+  }
+  .lang-dropdown button:hover{background:var(--bg);}
+  .lang-dropdown button.active{font-weight:600;color:var(--accent-ink);}
 
   .theme-toggle{
     width:38px;height:38px;border-radius:50%;
@@ -408,9 +421,15 @@
     <a href="#" data-i18n="nav_catalog">Catalogue</a>
     <a href="#" data-i18n="nav_contact">Contact</a>
     <div class="lang-switch" id="langSwitch">
-      <button class="lang-btn" data-lang="fr" title="Français">🇫🇷</button>
-      <button class="lang-btn" data-lang="nl" title="Nederlands">🇧🇪</button>
-      <button class="lang-btn" data-lang="en" title="English">🇬🇧</button>
+      <button class="lang-current-btn" id="langCurrentBtn">
+        <span id="langCurrentFlag">🇫🇷</span>
+        <svg class="lang-caret" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="lang-dropdown" id="langDropdown">
+        <button data-lang="fr">🇫🇷 Français</button>
+        <button data-lang="nl">🇧🇪 Nederlands</button>
+        <button data-lang="en">🇬🇧 English</button>
+      </div>
     </div>
     <button class="theme-toggle" id="themeToggle" title="Changer de thème">🌙</button>
   </nav>
@@ -704,7 +723,9 @@
   }
 
   function updateLangButtons(){
-    document.querySelectorAll('.lang-btn').forEach(btn => {
+    const FLAG_BY_LANG = {fr:'🇫🇷', nl:'🇧🇪', en:'🇬🇧'};
+    document.getElementById('langCurrentFlag').textContent = FLAG_BY_LANG[currentLang];
+    document.querySelectorAll('.lang-dropdown button').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === currentLang);
     });
   }
@@ -721,8 +742,17 @@
     }
   }
 
-  document.getElementById('langSwitch').querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+  const langSwitchEl = document.getElementById('langSwitch');
+  document.getElementById('langCurrentBtn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    langSwitchEl.classList.toggle('open');
+  });
+  document.addEventListener('click', ()=> langSwitchEl.classList.remove('open'));
+  document.querySelectorAll('.lang-dropdown button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setLang(btn.dataset.lang);
+      langSwitchEl.classList.remove('open');
+    });
   });
 
   // --- Favoris ---
@@ -817,6 +847,22 @@
     return n.toLocaleString('fr-BE') + " km";
   }
   function num(v){ return parseFloat(String(v).replace(/[^\d.]/g,"")) || 0; }
+
+  // Traduit "12 mois" / "2 ans" (texte du Sheet, toujours en français) vers la langue active.
+  function translateWarrantyDuration(raw){
+    if(!raw) return raw;
+    const match = String(raw).trim().match(/(\d+)\s*(mois|ans?|an)\b/i);
+    if(!match) return raw;
+    const n = parseInt(match[1], 10);
+    const isMonth = match[2].toLowerCase().startsWith('mois');
+    const UNITS = {
+      fr: { month: 'mois', year: n === 1 ? 'an' : 'ans' },
+      nl: { month: 'maanden', year: 'jaar' },
+      en: { month: n === 1 ? 'month' : 'months', year: n === 1 ? 'year' : 'years' }
+    };
+    const set = UNITS[currentLang] || UNITS.fr;
+    return `${n} ${isMonth ? set.month : set.year}`;
+  }
 
   function isWithinSoldGrace(c){
     const saleDateStr = (c["Date de vente"]||"").trim();
@@ -1072,7 +1118,7 @@
     if(c["Carburant"]) chipValues.push(tv(FUEL_LABELS, c["Carburant"]));
     if(c["Nombre de places"]) chipValues.push(c["Nombre de places"] + " " + t('seats_suffix'));
     let chipsHtml = chipValues.map(v => `<span class="chip">${v}</span>`).join("");
-    if(c["Garantie"]) chipsHtml += `<span class="chip chip-good">${c["Garantie"]} ${t('warranty_suffix')}</span>`;
+    if(c["Garantie"]) chipsHtml += `<span class="chip chip-good">${translateWarrantyDuration(c["Garantie"])} ${t('warranty_suffix')}</span>`;
 
     return `
       <div class="card" data-id="${c["ID"]}">
@@ -1198,7 +1244,7 @@
           <div class="spec"><div class="label">${t('detail_gearbox')}</div><div class="value">${tv(GEARBOX_LABELS, c["Boîte de vitesse"])||"—"}</div></div>
           <div class="spec"><div class="label">${t('detail_seats')}</div><div class="value">${c["Nombre de places"]||"—"}</div></div>
           <div class="spec"><div class="label">${t('detail_color')}</div><div class="value">${tv(COLOR_LABELS, c["Couleur"])||"—"}</div></div>
-          <div class="spec"><div class="label">${t('detail_warranty')}</div><div class="value">${c["Garantie"]||"—"}</div></div>
+          <div class="spec"><div class="label">${t('detail_warranty')}</div><div class="value">${translateWarrantyDuration(c["Garantie"])||"—"}</div></div>
           <div class="spec"><div class="label">${t('detail_last_inspection')}</div><div class="value">${c["Date dernier contrôle technique"]||"—"}</div></div>
           <div class="spec"><div class="label">${t('detail_inspection_result')}</div><div class="value">${c["Résultat contrôle technique"]||"—"}</div></div>
         </div>
