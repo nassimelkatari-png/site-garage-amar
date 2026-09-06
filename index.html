@@ -13,7 +13,7 @@
   Cal.ns["visite-vehicule"]("ui", {"hideEventTypeDetails": false, "layout": "month_view"});
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap');
 
   :root{
     --bg:#FFFFFF;
@@ -217,7 +217,7 @@
     gap:34px 22px;
   }
 
-  /* --- Carte véhicule : plus de cadre, plus de fond distinct --- */
+  /* --- Carte véhicule : pas de cadre, pas de fond distinct --- */
   .card{
     background:none;border:none;border-radius:0;
     overflow:visible;cursor:pointer;
@@ -226,19 +226,6 @@
   .card .thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#DDD;border-radius:10px;}
 
   .card-media{position:relative;border-radius:10px;overflow:hidden;}
-  .fav-btn{
-    position:absolute;top:10px;right:10px;z-index:2;
-    width:32px;height:32px;border-radius:50%;
-    background:rgba(255,255,255,0.92);border:none;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:0 1px 4px rgba(0,0,0,0.25);
-    transition:transform .12s ease;
-    padding:0;
-  }
-  [data-theme="dark"] .fav-btn{background:rgba(30,34,37,0.9);}
-  .fav-btn:hover{transform:scale(1.08);}
-  .fav-btn svg{width:17px;height:17px;stroke:var(--ink-soft);fill:none;stroke-width:1.8;}
-  .fav-btn.active svg{fill:var(--accent);stroke:var(--accent);}
 
   .thumb-wrap{position:relative;overflow:hidden;aspect-ratio:4/3;background:#DDD;border-radius:10px;}
   .thumb-track{display:flex;height:100%;transition:transform .2s ease;}
@@ -272,20 +259,34 @@
   }
   .badge.ok{background:var(--ok-bg);color:var(--ok-ink);}
   .badge.hold{background:var(--hold-bg);color:var(--hold-ink);}
-  .card h3{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;margin:0 0 3px;}
-  .card .submodel{font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
 
-  /* --- Pastilles specs --- */
-  .spec-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;}
-  .chip{
-    font-size:12.5px;font-weight:500;color:var(--ink-soft);
-    background:var(--bg);border:1px solid var(--line);
-    padding:4px 10px;border-radius:20px;white-space:nowrap;
+  /* --- Titre + bouton favori côte à côte --- */
+  .title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 3px;}
+  .card h3{font-family:'Quicksand',sans-serif;font-size:17px;font-weight:600;margin:0;color:var(--ink);}
+
+  .fav-btn{
+    width:32px;height:32px;border-radius:50%;flex-shrink:0;
+    background:none;border:1px solid var(--line);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .12s ease;
+    padding:0;
   }
-  [data-theme="light"] .chip{background:#F2F3F1;}
+  .fav-btn:hover{border-color:var(--accent);}
+  .fav-btn svg{width:16px;height:16px;stroke:var(--ink-soft);fill:none;stroke-width:1.8;}
+  .fav-btn.active svg{fill:var(--accent);stroke:var(--accent);}
+
+  /* --- Pastilles specs : rectangles, pas des bulles --- */
+  .spec-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;}
+  .chip{
+    font-family:'Quicksand',sans-serif;
+    font-size:12.5px;font-weight:600;color:var(--ink-soft);
+    background:#F2F3F1;border:1px solid var(--line);
+    padding:5px 11px;border-radius:8px;white-space:nowrap;
+  }
+  [data-theme="dark"] .chip{background:var(--card);}
   .chip.chip-good{background:var(--ok-bg);color:var(--ok-ink);border-color:transparent;}
 
-  .price{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:var(--ink);}
+  .price{font-family:'Quicksand',sans-serif;font-size:20px;font-weight:700;color:var(--ink);}
 
   .state{padding:60px 0;text-align:center;color:var(--ink-soft);font-size:15px;}
 
@@ -797,6 +798,7 @@
     const yearMax = parseInt(document.getElementById('yearMaxSelect').value);
 
     return cars.filter(c => {
+      // "Vendu" retire la voiture du catalogue automatiquement.
       if((c["Statut"]||"").trim().toLowerCase() === "vendu") return false;
 
       const price = num(c["Prix (€)"]);
@@ -855,19 +857,21 @@
     if(c["Boîte de vitesse"]) chipValues.push(c["Boîte de vitesse"]);
     if(c["Carburant"]) chipValues.push(c["Carburant"]);
     let chipsHtml = chipValues.map(v => `<span class="chip">${v}</span>`).join("");
-    if(c["Garantie"]) chipsHtml += `<span class="chip chip-good">${c["Garantie"]}</span>`;
+    if(c["Garantie"]) chipsHtml += `<span class="chip chip-good">${c["Garantie"]} de garantie</span>`;
 
     return `
       <div class="card" data-id="${c["ID"]}">
         <div class="card-media">
           ${thumbHtml}
-          <button class="fav-btn${favActive}" data-fav-id="${c["ID"]}" title="Ajouter aux favoris" onclick="event.stopPropagation(); toggleFavorite('${c["ID"]}')">
-            <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.33-8.2C1.02 10.28 1.6 6.9 4.6 5.4c2.2-1.1 4.6-.3 5.9 1.4l1.5 2 1.5-2c1.3-1.7 3.7-2.5 5.9-1.4 3 1.5 3.58 4.88 1.93 7.4C18.7 16.65 12 21 12 21z"/></svg>
-          </button>
         </div>
         <div class="body">
           <span class="badge ${badgeClass}">${statut}</span>
-          <h3>${c["Marque"]||""} ${c["Modèle"]||""}</h3>
+          <div class="title-row">
+            <h3>${c["Marque"]||""} ${c["Modèle"]||""}</h3>
+            <button class="fav-btn${favActive}" data-fav-id="${c["ID"]}" title="Ajouter aux favoris" onclick="event.stopPropagation(); toggleFavorite('${c["ID"]}')">
+              <svg viewBox="0 0 24 24"><path d="M12 21s-6.7-4.35-9.33-8.2C1.02 10.28 1.6 6.9 4.6 5.4c2.2-1.1 4.6-.3 5.9 1.4l1.5 2 1.5-2c1.3-1.7 3.7-2.5 5.9-1.4 3 1.5 3.58 4.88 1.93 7.4C18.7 16.65 12 21 12 21z"/></svg>
+            </button>
+          </div>
           <div class="spec-chips">${chipsHtml}</div>
           <span class="price">${fmtPrice(c["Prix (€)"])}</span>
         </div>
