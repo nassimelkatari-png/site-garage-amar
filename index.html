@@ -1073,6 +1073,7 @@
     Papa.parse(CSV_URL, {
       download:true,
       header:true,
+      transformHeader: h => h.trim(),
       skipEmptyLines:true,
       complete: function(results){
         cars = results.data.filter(r => r["ID"] && r["ID"].trim() !== "");
