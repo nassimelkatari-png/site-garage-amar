@@ -966,16 +966,21 @@
     const container = document.getElementById('kmBrackets');
     container.innerHTML = brackets.map((b,i) => `
       <label>
-        <input type="radio" name="kmBracket" data-min="${b.min}" data-max="${b.max === Infinity ? '' : b.max}" ${kmBracketSelected && kmBracketSelected.min === b.min && (kmBracketSelected.max === b.max) ? 'checked' : ''}>
+        <input type="checkbox" data-min="${b.min}" data-max="${b.max === Infinity ? '' : b.max}" ${kmBracketSelected && kmBracketSelected.min === b.min && kmBracketSelected.max === b.max ? 'checked' : ''}>
         ${t(b.key)}
       </label>
     `).join("");
     container.querySelectorAll('input').forEach(input => {
       input.addEventListener('change', (e)=>{
-        const min = parseFloat(e.target.dataset.min);
-        const maxAttr = e.target.dataset.max;
-        const max = maxAttr === "" ? Infinity : parseFloat(maxAttr);
-        kmBracketSelected = {min, max};
+        if(e.target.checked){
+          container.querySelectorAll('input').forEach(other => { if(other !== e.target) other.checked = false; });
+          const min = parseFloat(e.target.dataset.min);
+          const maxAttr = e.target.dataset.max;
+          const max = maxAttr === "" ? Infinity : parseFloat(maxAttr);
+          kmBracketSelected = {min, max};
+        } else {
+          kmBracketSelected = null;
+        }
         render();
       });
     });
@@ -989,9 +994,11 @@
     const selMax = document.getElementById('yearMaxSelect');
     const prevMin = selMin.value, prevMax = selMax.value;
     selMin.innerHTML = `<option value="">${t('year_from')}</option>`;
-    selMax.innerHTML = `<option value="">${t('year_to')}</option>`;
     for(let y = minY; y <= maxY; y++){
       selMin.innerHTML += `<option value="${y}">${y}</option>`;
+    }
+    selMax.innerHTML = `<option value="">${t('year_to')}</option>`;
+    for(let y = 2010; y <= 2025; y++){
       selMax.innerHTML += `<option value="${y}">${y}</option>`;
     }
     selMin.value = prevMin; selMax.value = prevMax;
@@ -1018,7 +1025,6 @@
   function resetFilters(){
     activeFilters = { marque:new Set(), carburant:new Set(), transmission:new Set(), couleur:new Set(), options:new Set() };
     document.querySelectorAll('.checkbox-list input[type=checkbox]').forEach(cb => cb.checked = false);
-    document.querySelectorAll('.checkbox-list input[type=radio]').forEach(r => r.checked = false);
     kmBracketSelected = null;
     document.getElementById('yearMinSelect').value = "";
     document.getElementById('yearMaxSelect').value = "";
