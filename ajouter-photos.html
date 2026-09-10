@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ajouter des photos</title>
+<title>Outil interne - Garage Demo</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -31,17 +31,40 @@
   .site-name{font-family:'Oswald',sans-serif;font-weight:700;}
 
   header{
-    padding:28px 6vw 20px;
+    padding:28px 6vw 0;
     border-bottom:1px solid var(--line);
   }
   header .brand{font-size:22px;text-transform:uppercase;letter-spacing:0.5px;}
-  header p{color:var(--ink-soft);font-size:14px;margin:6px 0 0;}
+  header p{color:var(--ink-soft);font-size:14px;margin:6px 0 20px;}
+
+  .tabs{
+    display:flex;
+    gap:4px;
+  }
+  .tab-btn{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    padding:12px 20px;
+    background:none;
+    border:none;
+    border-bottom:2px solid transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .tab-btn.active{
+    color:var(--ink);
+    border-bottom-color:var(--accent);
+  }
 
   main{
     max-width:640px;
     margin:0 auto;
     padding:40px 24px 80px;
   }
+
+  .panel{display:none;}
+  .panel.active{display:block;}
 
   h1{
     font-family:'Oswald',sans-serif;
@@ -85,7 +108,7 @@
   .dropzone.drag{border-color:var(--accent);background:#FBF3EC;}
   .dropzone p{margin:0;color:var(--ink-soft);font-size:14px;}
   .dropzone strong{color:var(--ink);}
-  #fileInput{display:none;}
+  input[type="file"]{display:none;}
 
   .previews{
     display:grid;
@@ -159,6 +182,16 @@
     background:var(--card);
     color:var(--ink);
   }
+  .result a.pdf-link{
+    display:block;
+    word-break:break-all;
+    font-size:13px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--card);
+    color:var(--accent-ink);
+  }
   .result .copy-btn{
     margin-top:10px;
     font-size:13px;
@@ -177,106 +210,169 @@
     display:none;
   }
   .error-box.show{display:block;}
+
+  .spinner-text{
+    display:none;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13px;
+    margin-top:16px;
+  }
+  .spinner-text.show{display:block;}
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand site-name">GARAGE DEMO</div>
-  <p>Outil interne — ajout de photos véhicules</p>
+  <p>Outil interne — photos et fiches véhicules</p>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="photos">Photos</button>
+    <button class="tab-btn" data-tab="documents">Générer fiche</button>
+  </div>
 </header>
 
 <main>
-  <h1 class="site-name">Ajouter des photos</h1>
-  <p class="subtitle">Indique l'ID du véhicule, dépose ses photos, puis colle les liens obtenus dans la colonne "Lien photos" du tableau du stock.</p>
 
-  <div class="field">
-    <label for="carId">ID du véhicule</label>
-    <input type="text" id="carId" placeholder="ex : V006">
-    <div class="hint">C'est l'identifiant utilisé dans le tableau du stock (colonne "ID").</div>
-  </div>
+  <!-- ONGLET PHOTOS -->
+  <section class="panel active" id="panel-photos">
+    <h1 class="site-name">Ajouter des photos</h1>
+    <p class="subtitle">Indique l'ID du véhicule, dépose ses photos, puis colle les liens obtenus dans la colonne "Lien photos" du tableau du stock.</p>
 
-  <div class="field">
-    <label>Photos</label>
-    <div class="dropzone" id="dropzone">
-      <p><strong>Glisse tes photos ici</strong><br>ou clique pour les choisir</p>
-      <input type="file" id="fileInput" accept="image/*" multiple>
+    <div class="field">
+      <label for="carId">ID du véhicule</label>
+      <input type="text" id="carId" placeholder="ex : V006">
+      <div class="hint">C'est l'identifiant utilisé dans le tableau du stock (colonne "ID").</div>
     </div>
-    <div class="previews" id="previews"></div>
-  </div>
 
-  <button class="btn" id="uploadBtn" disabled>Envoyer les photos</button>
+    <div class="field">
+      <label>Photos</label>
+      <div class="dropzone" id="dropzone-photos">
+        <p><strong>Glisse tes photos ici</strong><br>ou clique pour les choisir</p>
+        <input type="file" id="fileInput-photos" accept="image/*" multiple>
+      </div>
+      <div class="previews" id="previews-photos"></div>
+    </div>
 
-  <div class="error-box" id="errorBox"></div>
+    <button class="btn" id="uploadBtn" disabled>Envoyer les photos</button>
 
-  <div class="result" id="result">
-    <h2>Liens générés</h2>
-    <textarea id="linksOutput" readonly></textarea>
-    <button class="btn copy-btn" id="copyBtn">Copier les liens</button>
-    <p>Colle ce texte dans la cellule "Lien photos" de la ligne correspondante, dans le Google Sheet du stock.</p>
-  </div>
+    <div class="error-box" id="errorBox-photos"></div>
+
+    <div class="result" id="result-photos">
+      <h2>Liens générés</h2>
+      <textarea id="linksOutput" readonly></textarea>
+      <button class="btn copy-btn" id="copyBtn">Copier les liens</button>
+      <p>Colle ce texte dans la cellule "Lien photos" de la ligne correspondante, dans le Google Sheet du stock.</p>
+    </div>
+  </section>
+
+  <!-- ONGLET DOCUMENTS -->
+  <section class="panel" id="panel-documents">
+    <h1 class="site-name">Générer une fiche PDF</h1>
+    <p class="subtitle">Indique l'ID du véhicule, dépose les photos des documents (Car-Pass, contrôle technique, carte grise), puis récupère le lien du PDF généré automatiquement à coller dans la colonne "Lien documents" du tableau du stock.</p>
+
+    <div class="field">
+      <label for="carId2">ID du véhicule</label>
+      <input type="text" id="carId2" placeholder="ex : V006">
+      <div class="hint">C'est l'identifiant utilisé dans le tableau du stock (colonne "ID").</div>
+    </div>
+
+    <div class="field">
+      <label>Documents</label>
+      <div class="dropzone" id="dropzone-docs">
+        <p><strong>Glisse tes documents ici</strong><br>ou clique pour les choisir</p>
+        <input type="file" id="fileInput-docs" accept="image/*" multiple>
+      </div>
+      <div class="previews" id="previews-docs"></div>
+    </div>
+
+    <button class="btn" id="analyzeBtn" disabled>Analyser et générer le PDF</button>
+
+    <div class="spinner-text" id="spinner-docs">Analyse en cours... cela peut prendre 20-30 secondes.</div>
+
+    <div class="error-box" id="errorBox-docs"></div>
+
+    <div class="result" id="result-docs">
+      <h2>Fiche générée</h2>
+      <a class="pdf-link" id="pdfLink" href="#" target="_blank"></a>
+      <button class="btn copy-btn" id="copyPdfBtn">Copier le lien</button>
+      <p>Colle ce lien dans la cellule "Lien documents" de la ligne correspondante, dans le Google Sheet du stock.</p>
+    </div>
+  </section>
+
 </main>
 
 <script>
+  // ---------- Tabs ----------
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---------- ONGLET PHOTOS (Cloudinary) ----------
   const CLOUD_NAME = "d4vn2ook";
   const UPLOAD_PRESET = "Nared Studio";
 
-  let files = [];
+  let photoFiles = [];
 
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('fileInput');
-  const previews = document.getElementById('previews');
+  const dropzonePhotos = document.getElementById('dropzone-photos');
+  const fileInputPhotos = document.getElementById('fileInput-photos');
+  const previewsPhotos = document.getElementById('previews-photos');
   const uploadBtn = document.getElementById('uploadBtn');
   const carIdInput = document.getElementById('carId');
-  const errorBox = document.getElementById('errorBox');
-  const result = document.getElementById('result');
+  const errorBoxPhotos = document.getElementById('errorBox-photos');
+  const resultPhotos = document.getElementById('result-photos');
   const linksOutput = document.getElementById('linksOutput');
 
-  dropzone.addEventListener('click', ()=> fileInput.click());
-  dropzone.addEventListener('dragover', (e)=>{ e.preventDefault(); dropzone.classList.add('drag'); });
-  dropzone.addEventListener('dragleave', ()=> dropzone.classList.remove('drag'));
-  dropzone.addEventListener('drop', (e)=>{
+  dropzonePhotos.addEventListener('click', ()=> fileInputPhotos.click());
+  dropzonePhotos.addEventListener('dragover', (e)=>{ e.preventDefault(); dropzonePhotos.classList.add('drag'); });
+  dropzonePhotos.addEventListener('dragleave', ()=> dropzonePhotos.classList.remove('drag'));
+  dropzonePhotos.addEventListener('drop', (e)=>{
     e.preventDefault();
-    dropzone.classList.remove('drag');
-    addFiles(e.dataTransfer.files);
+    dropzonePhotos.classList.remove('drag');
+    addPhotoFiles(e.dataTransfer.files);
   });
-  fileInput.addEventListener('change', ()=> addFiles(fileInput.files));
+  fileInputPhotos.addEventListener('change', ()=> addPhotoFiles(fileInputPhotos.files));
 
-  function addFiles(fileList){
+  function addPhotoFiles(fileList){
     Array.from(fileList).forEach(f=>{
       if(!f.type.startsWith('image/')) return;
-      files.push({ file:f, status:'pending' });
+      photoFiles.push({ file:f, status:'pending' });
     });
-    renderPreviews();
+    renderPhotoPreviews();
     updateUploadBtn();
   }
 
-  function renderPreviews(){
-    previews.innerHTML = files.map((item, i) => `
+  function renderPhotoPreviews(){
+    previewsPhotos.innerHTML = photoFiles.map((item, i) => `
       <div class="preview-item" data-i="${i}">
         <img src="${URL.createObjectURL(item.file)}">
         <button class="remove" data-i="${i}">&times;</button>
         ${item.status !== 'pending' ? `<div class="status ${item.status}">${item.status === 'ok' ? 'Envoyée' : item.status === 'uploading' ? '...' : 'Erreur'}</div>` : ''}
       </div>`).join("");
 
-    previews.querySelectorAll('.remove').forEach(btn=>{
+    previewsPhotos.querySelectorAll('.remove').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
-        files.splice(parseInt(btn.dataset.i), 1);
-        renderPreviews();
+        photoFiles.splice(parseInt(btn.dataset.i), 1);
+        renderPhotoPreviews();
         updateUploadBtn();
       });
     });
   }
 
   function updateUploadBtn(){
-    uploadBtn.disabled = files.length === 0 || carIdInput.value.trim() === "";
+    uploadBtn.disabled = photoFiles.length === 0 || carIdInput.value.trim() === "";
   }
   carIdInput.addEventListener('input', updateUploadBtn);
 
   uploadBtn.addEventListener('click', async ()=>{
-    errorBox.classList.remove('show');
-    result.classList.remove('show');
+    errorBoxPhotos.classList.remove('show');
+    resultPhotos.classList.remove('show');
     uploadBtn.disabled = true;
     uploadBtn.textContent = "Envoi en cours...";
 
@@ -284,13 +380,13 @@
     const urls = [];
     let hadError = false;
 
-    for(let i = 0; i < files.length; i++){
-      files[i].status = 'uploading';
-      renderPreviews();
+    for(let i = 0; i < photoFiles.length; i++){
+      photoFiles[i].status = 'uploading';
+      renderPhotoPreviews();
 
       try{
         const formData = new FormData();
-        formData.append('file', files[i].file);
+        formData.append('file', photoFiles[i].file);
         formData.append('upload_preset', UPLOAD_PRESET);
         formData.append('folder', carId);
 
@@ -301,16 +397,16 @@
         const data = await res.json();
         if(data.secure_url){
           urls.push(data.secure_url);
-          files[i].status = 'ok';
+          photoFiles[i].status = 'ok';
         } else {
-          files[i].status = 'err';
+          photoFiles[i].status = 'err';
           hadError = true;
         }
       } catch(err){
-        files[i].status = 'err';
+        photoFiles[i].status = 'err';
         hadError = true;
       }
-      renderPreviews();
+      renderPhotoPreviews();
     }
 
     uploadBtn.disabled = false;
@@ -318,11 +414,11 @@
 
     if(urls.length > 0){
       linksOutput.value = urls.join(", ");
-      result.classList.add('show');
+      resultPhotos.classList.add('show');
     }
     if(hadError){
-      errorBox.textContent = "Certaines photos n'ont pas pu être envoyées. Vérifie ta connexion et réessaie pour celles en erreur.";
-      errorBox.classList.add('show');
+      errorBoxPhotos.textContent = "Certaines photos n'ont pas pu être envoyées. Vérifie ta connexion et réessaie pour celles en erreur.";
+      errorBoxPhotos.classList.add('show');
     }
   });
 
@@ -330,6 +426,114 @@
     linksOutput.select();
     document.execCommand('copy');
     const btn = document.getElementById('copyBtn');
+    const original = btn.textContent;
+    btn.textContent = "Copié !";
+    setTimeout(()=> btn.textContent = original, 1500);
+  });
+
+  // ---------- ONGLET DOCUMENTS (n8n -> PDFShift) ----------
+  const WEBHOOK_URL = "https://naredstudio.app.n8n.cloud/webhook/analyse-documents";
+
+  let docFiles = [];
+
+  const dropzoneDocs = document.getElementById('dropzone-docs');
+  const fileInputDocs = document.getElementById('fileInput-docs');
+  const previewsDocs = document.getElementById('previews-docs');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const carIdInput2 = document.getElementById('carId2');
+  const errorBoxDocs = document.getElementById('errorBox-docs');
+  const resultDocs = document.getElementById('result-docs');
+  const pdfLink = document.getElementById('pdfLink');
+  const spinnerDocs = document.getElementById('spinner-docs');
+
+  dropzoneDocs.addEventListener('click', ()=> fileInputDocs.click());
+  dropzoneDocs.addEventListener('dragover', (e)=>{ e.preventDefault(); dropzoneDocs.classList.add('drag'); });
+  dropzoneDocs.addEventListener('dragleave', ()=> dropzoneDocs.classList.remove('drag'));
+  dropzoneDocs.addEventListener('drop', (e)=>{
+    e.preventDefault();
+    dropzoneDocs.classList.remove('drag');
+    addDocFiles(e.dataTransfer.files);
+  });
+  fileInputDocs.addEventListener('change', ()=> addDocFiles(fileInputDocs.files));
+
+  function addDocFiles(fileList){
+    Array.from(fileList).forEach(f=>{
+      if(!f.type.startsWith('image/')) return;
+      docFiles.push(f);
+    });
+    renderDocPreviews();
+    updateAnalyzeBtn();
+  }
+
+  function renderDocPreviews(){
+    previewsDocs.innerHTML = docFiles.map((file, i) => `
+      <div class="preview-item" data-i="${i}">
+        <img src="${URL.createObjectURL(file)}">
+        <button class="remove" data-i="${i}">&times;</button>
+      </div>`).join("");
+
+    previewsDocs.querySelectorAll('.remove').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        docFiles.splice(parseInt(btn.dataset.i), 1);
+        renderDocPreviews();
+        updateAnalyzeBtn();
+      });
+    });
+  }
+
+  function updateAnalyzeBtn(){
+    analyzeBtn.disabled = docFiles.length === 0 || carIdInput2.value.trim() === "";
+  }
+  carIdInput2.addEventListener('input', updateAnalyzeBtn);
+
+  analyzeBtn.addEventListener('click', async ()=>{
+    errorBoxDocs.classList.remove('show');
+    resultDocs.classList.remove('show');
+    spinnerDocs.classList.add('show');
+    analyzeBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('vehicleId', carIdInput2.value.trim());
+    docFiles.forEach((file, i) => {
+      formData.append('document' + i, file, file.name);
+    });
+
+    try{
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        body: formData
+      });
+
+      if(!response.ok){
+        throw new Error('Erreur ' + response.status);
+      }
+
+      const data = await response.json();
+      const url = data.url || (Array.isArray(data) ? data[0]?.url : null);
+
+      spinnerDocs.classList.remove('show');
+
+      if(url){
+        pdfLink.href = url;
+        pdfLink.textContent = url;
+        resultDocs.classList.add('show');
+      } else {
+        errorBoxDocs.textContent = "Réponse inattendue du serveur : " + JSON.stringify(data);
+        errorBoxDocs.classList.add('show');
+      }
+    } catch(err){
+      spinnerDocs.classList.remove('show');
+      errorBoxDocs.textContent = "Erreur lors de la génération : " + err.message;
+      errorBoxDocs.classList.add('show');
+    }
+
+    analyzeBtn.disabled = false;
+  });
+
+  document.getElementById('copyPdfBtn').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(pdfLink.href);
+    const btn = document.getElementById('copyPdfBtn');
     const original = btn.textContent;
     btn.textContent = "Copié !";
     setTimeout(()=> btn.textContent = original, 1500);
