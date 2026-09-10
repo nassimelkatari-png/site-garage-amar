@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Générer fiche véhicule - Garage Demo</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background: #fff;
+    color: #111;
+  }
+  h1 {
+    font-size: 22px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 30px;
+  }
+  h2 {
+    font-size: 28px;
+    margin-top: 0;
+  }
+  .description {
+    color: #444;
+    margin-bottom: 30px;
+    line-height: 1.5;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .hint {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 30px;
+  }
+  #dropzone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 50px 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  #dropzone.dragover {
+    border-color: #c2703d;
+    background: #fdf6f1;
+  }
+  #dropzone strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+  #dropzone span {
+    color: #888;
+    font-size: 14px;
+  }
+  #previews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .thumb {
+    position: relative;
+    width: 110px;
+  }
+  .thumb img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+  }
+  .thumb .remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .thumb .status {
+    text-align: center;
+    font-size: 11px;
+    margin-top: 4px;
+    color: #666;
+  }
+  button#send {
+    width: 100%;
+    padding: 16px;
+    background: #c2703d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  button#send:disabled {
+    background: #ddb59a;
+    cursor: not-allowed;
+  }
+  #result {
+    display: none;
+    background: #f3f9f3;
+    border: 1px solid #cfe8cf;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  #result.error {
+    background: #fdf1f1;
+    border-color: #f0c7c7;
+  }
+  #result h3 {
+    margin-top: 0;
+    font-size: 15px;
+  }
+  #pdfLinkBox {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cfe8cf;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 13px;
+    word-break: break-all;
+    margin-bottom: 12px;
+  }
+  #copyBtn {
+    padding: 10px 16px;
+    background: #c2703d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .note {
+    color: #666;
+    font-size: 13px;
+    margin-top: 20px;
+  }
+  #spinner {
+    display: none;
+    text-align: center;
+    padding: 10px 0;
+    color: #666;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<h1>GARAGE DEMO</h1>
+<div class="subtitle">Outil interne — génération de fiche véhicule</div>
+
+<h2>Générer une fiche PDF</h2>
+<p class="description">
+  Indique l'ID du véhicule, dépose les photos des documents (Car-Pass, contrôle technique, carte grise),
+  puis récupère le lien du PDF généré automatiquement à coller dans la colonne "Lien documents" du tableau du stock.
+</p>
+
+<label for="vehicleId">ID du véhicule</label>
+<input type="text" id="vehicleId" placeholder="V005">
+<div class="hint">C'est l'identifiant utilisé dans le tableau du stock (colonne "ID").</div>
+
+<label>Documents</label>
+<div id="dropzone">
+  <strong>Glisse tes documents ici</strong>
+  <span>ou clique pour les choisir</span>
+  <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+</div>
+
+<div id="previews"></div>
+
+<button id="send" disabled>Analyser et générer le PDF</button>
+
+<div id="spinner">Analyse en cours... cela peut prendre 20-30 secondes.</div>
+
+<div id="result">
+  <h3 id="resultTitle">Fiche générée avec succès</h3>
+  <div id="pdfLinkBox"></div>
+  <button id="copyBtn">Copier le lien</button>
+</div>
+
+<p class="note">
+  Le PDF est généré à partir des documents fournis par une IA. Vérifie toujours les informations avant de les utiliser.
+</p>
+
+<script>
+  // Remplace par ton URL de webhook n8n en production
+  const WEBHOOK_URL = "https://naredstudio.app.n8n.cloud/webhook/analyse-documents";
+
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const previews = document.getElementById('previews');
+  const sendBtn = document.getElementById('send');
+  const spinner = document.getElementById('spinner');
+  const result = document.getElementById('result');
+  const resultTitle = document.getElementById('resultTitle');
+  const pdfLinkBox = document.getElementById('pdfLinkBox');
+  const copyBtn = document.getElementById('copyBtn');
+  const vehicleIdInput = document.getElementById('vehicleId');
+
+  let files = [];
+
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    addFiles(e.dataTransfer.files);
+  });
+
+  fileInput.addEventListener('change', (e) => addFiles(e.target.files));
+
+  function addFiles(fileList) {
+    for (const file of fileList) {
+      if (!file.type.startsWith('image/')) continue;
+      files.push(file);
+      renderThumb(file);
+    }
+    updateSendState();
+  }
+
+  function renderThumb(file) {
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove';
+    removeBtn.textContent = '×';
+    removeBtn.onclick = () => {
+      files = files.filter(f => f !== file);
+      div.remove();
+      updateSendState();
+    };
+    const status = document.createElement('div');
+    status.className = 'status';
+    status.textContent = file.name.length > 14 ? file.name.slice(0, 12) + '…' : file.name;
+    div.appendChild(img);
+    div.appendChild(removeBtn);
+    div.appendChild(status);
+    previews.appendChild(div);
+  }
+
+  function updateSendState() {
+    sendBtn.disabled = files.length === 0 || vehicleIdInput.value.trim() === '';
+  }
+
+  vehicleIdInput.addEventListener('input', updateSendState);
+
+  sendBtn.addEventListener('click', async () => {
+    result.style.display = 'none';
+    spinner.style.display = 'block';
+    sendBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('vehicleId', vehicleIdInput.value.trim());
+    files.forEach((file, i) => {
+      formData.append('document' + i, file, file.name);
+    });
+
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur ' + response.status);
+      }
+
+      const data = await response.json();
+      const pdfUrl = data.url || data[0]?.url || null;
+
+      spinner.style.display = 'none';
+      result.style.display = 'block';
+
+      if (pdfUrl) {
+        result.classList.remove('error');
+        resultTitle.textContent = 'Fiche générée avec succès';
+        pdfLinkBox.innerHTML = '<a href="' + pdfUrl + '" target="_blank">' + pdfUrl + '</a>';
+        copyBtn.style.display = 'inline-block';
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(pdfUrl);
+          copyBtn.textContent = 'Copié !';
+          setTimeout(() => copyBtn.textContent = 'Copier le lien', 1500);
+        };
+      } else {
+        result.classList.add('error');
+        resultTitle.textContent = 'Réponse inattendue';
+        pdfLinkBox.textContent = JSON.stringify(data);
+        copyBtn.style.display = 'none';
+      }
+    } catch (err) {
+      spinner.style.display = 'none';
+      result.style.display = 'block';
+      result.classList.add('error');
+      resultTitle.textContent = 'Erreur lors de la génération';
+      pdfLinkBox.textContent = err.message;
+      copyBtn.style.display = 'none';
+    }
+
+    sendBtn.disabled = false;
+  });
+</script>
+
+</body>
+</html>
